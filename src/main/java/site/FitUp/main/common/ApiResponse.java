@@ -15,6 +15,7 @@ import java.time.OffsetDateTime;
 public class ApiResponse <T>{
     private boolean isSuccess=true;
     private String code="200";
+    private final String message="성공했습니다.";
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
     private OffsetDateTime responseAt = OffsetDateTime.now();
     private T data = null;
