@@ -10,17 +10,22 @@ import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 
 @MappedSuperclass
 @Getter
 @Setter
 @EntityListeners(AuditingEntityListener.class)
 public abstract class BaseTime {
+
+    private static final ZoneId SEOUL_ZONE = ZoneId.of("Asia/Seoul");
+
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
-    private final OffsetDateTime createdAt = OffsetDateTime.now();
+    private final OffsetDateTime createdAt = ZonedDateTime.now(SEOUL_ZONE).toOffsetDateTime();
 
     @UpdateTimestamp
     @Column(name = "updated_at")
-    private OffsetDateTime updatedAt = OffsetDateTime.now();
+    private OffsetDateTime updatedAt = ZonedDateTime.now(SEOUL_ZONE).toOffsetDateTime();
 }
