@@ -8,7 +8,7 @@ import java.util.List;
 public class QuestResponse {
     @Builder
     @Getter
-    public static class Quest{
+    public static class QuestDto {
         private String questId;
         private String content;
         private boolean isSuccess;
@@ -16,9 +16,9 @@ public class QuestResponse {
     @Builder
     @Getter
     public static class DailyQuest{
-        private List<Quest> fitness;
-        private Quest sleep;
-        private Quest daily;
+        private List<QuestDto> fitness;
+        private QuestDto sleep;
+        private QuestDto daily;
     }
     @Builder
     @Getter
@@ -68,7 +68,7 @@ public class QuestResponse {
     @Builder
     @Getter
     public static class GetQuestTierResponse{
-        private int previousTier;
-        private int nowTier;
+        private int previousExp;
+        private int currentExp;
     }
 }

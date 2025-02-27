@@ -19,22 +19,22 @@ public class QuestController {
     @PostMapping("")
     public ApiResponse<QuestResponse.CreateQuestsResponse>CreateQuestController(@RequestHeader("Authorization") String token, @RequestBody QuestRequest.CreateQuestsRequest request){
 //        questService.createQuestsService(request,"123");
-        List<QuestResponse.Quest> fitness=new ArrayList<>();
-        fitness.add(QuestResponse.Quest.builder()
+        List<QuestResponse.QuestDto> fitness=new ArrayList<>();
+        fitness.add(QuestResponse.QuestDto.builder()
                 .questId("QUEST1")
                 .content("벤치프레스 65kg 5세트 수행")
                 .isSuccess(false).build());
-        fitness.add(QuestResponse.Quest.builder()
+        fitness.add(QuestResponse.QuestDto.builder()
                 .questId("QUEST2")
                 .content("덤벨 벤치프레스 20kg 5세트").isSuccess(false).build());
-        fitness.add(QuestResponse.Quest.builder()
+        fitness.add(QuestResponse.QuestDto.builder()
                 .questId("QUEST3")
                 .content("인클라인 벤치프레스 55kg 5세트").isSuccess(false).build());
-        QuestResponse.Quest sleep= QuestResponse.Quest.builder()
+        QuestResponse.QuestDto sleep= QuestResponse.QuestDto.builder()
                 .questId("QUEST4")
                 .content("수면 7시간 30분 유지")
                 .isSuccess(false).build();
-        QuestResponse.Quest daily= QuestResponse.Quest.builder()
+        QuestResponse.QuestDto daily= QuestResponse.QuestDto.builder()
                 .questId("QUEST5")
                 .content("점심 식단에 단백질 20g 추가").isSuccess(false).build();
         QuestResponse.DailyQuest quests=QuestResponse.DailyQuest.builder()
@@ -109,8 +109,8 @@ public class QuestController {
     public ApiResponse<QuestResponse.GetQuestTierResponse>GetQuestsTierController(@RequestHeader("Authorization")String token){
 
         return new ApiResponse<>(QuestResponse.GetQuestTierResponse.builder()
-                .previousTier(200)
-                .nowTier(400).build());
+                .previousExp(200)
+                .currentExp(400).build());
     }
 
 

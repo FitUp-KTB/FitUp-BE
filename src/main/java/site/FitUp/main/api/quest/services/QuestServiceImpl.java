@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import site.FitUp.main.api.quest.dtos.QuestRequest;
 import site.FitUp.main.api.quest.dtos.QuestResponse;
-import site.FitUp.main.api.stat.dtos.StatResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -89,28 +88,28 @@ public class QuestServiceImpl implements QuestService{
 
 
                         // Fitness 퀘스트 파싱
-                        List<QuestResponse.Quest> fitnessQuests = new ArrayList<>();
+                        List<QuestResponse.QuestDto> fitnessQuestDtos = new ArrayList<>();
                         JSONObject fitnessJson = dailyQuestsJson.getJSONObject("fitness");
 
                         for (String key : fitnessJson.keySet()) {
                             JSONObject questObj = fitnessJson.getJSONObject(key);
-                            QuestResponse.Quest quest = QuestResponse.Quest.builder()
+                            QuestResponse.QuestDto questDto = QuestResponse.QuestDto.builder()
                                     .questId(generateQuestId()) // UUID 기반 QuestId 생성
                                     .content(questObj.getString("contents"))
                                     .isSuccess(false)
                                     .build();
-                            fitnessQuests.add(quest);
+                            fitnessQuestDtos.add(questDto);
                         }
 
                         // Sleep 퀘스트 파싱
-                        QuestResponse.Quest sleepQuest = QuestResponse.Quest.builder()
+                        QuestResponse.QuestDto sleepQuestDto = QuestResponse.QuestDto.builder()
                                 .questId(generateQuestId()) // UUID 기반 QuestId 생성
                                 .content(dailyQuestsJson.getJSONObject("sleep").getString("contents"))
                                 .isSuccess(false)
                                 .build();
 
                         // Daily 퀘스트 파싱
-                        QuestResponse.Quest dailyQuest = QuestResponse.Quest.builder()
+                        QuestResponse.QuestDto dailyQuestDto = QuestResponse.QuestDto.builder()
                                 .questId(generateQuestId()) // UUID 기반 QuestId 생성
                                 .content(dailyQuestsJson.getJSONObject("daily").getString("contents"))
                                 .isSuccess(false)
@@ -118,9 +117,9 @@ public class QuestServiceImpl implements QuestService{
 
                         // 최종 객체 생성
                         QuestResponse.DailyQuest dailyQuestObject = QuestResponse.DailyQuest.builder()
-                                .fitness(fitnessQuests)
-                                .sleep(sleepQuest)
-                                .daily(dailyQuest)
+                                .fitness(fitnessQuestDtos)
+                                .sleep(sleepQuestDto)
+                                .daily(dailyQuestDto)
                                 .build();
 
                         return QuestResponse.CreateQuestsResponse.builder()
