@@ -1,5 +1,6 @@
 package site.FitUp.main.api.quest.dtos;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -51,6 +52,7 @@ public class QuestResponse {
         private String questId;
         private String content;
         private int exp;
+        @JsonProperty("isSuccess")
         private boolean isSuccess;
     }
     @Builder
