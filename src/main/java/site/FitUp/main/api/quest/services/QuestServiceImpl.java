@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,128 +44,123 @@ public class QuestServiceImpl implements QuestService{
         User user= userRepository.findById(userId).orElse(null);
         UserStat userStat=userStatRepository.findTopByUserOrderByCreatedAtDesc(user);
         UserStatResult userStatResult=userStatResultRepository.findByUserStat(userStat);
-        //더미 인풋 데이터
-        String[] completedQuest={"벤치 프레스 60kg 5세트"};
-        String[] failedQuest={"하루 2L 물 섭취"};
-        //DB에서 새로 값 가져올거 가져와야함(gender,height,weight)
-        JSONObject stats=new JSONObject()
-                .put("strength",userStatResult.getStrength())
-                .put("stamina",userStatResult.getStamina())
-                .put("endurance",userStatResult.getEndurance());
-        JSONObject lastQuest=new JSONObject()
-                .put("completed",completedQuest)
-                .put("failed",failedQuest);
-        // JSON 형식으로 입력 데이터 설정
-        JSONObject inputJson = new JSONObject()
+        log.info("Request Body : "+request.getMainCategory());
+        JSONObject stats = new JSONObject()
+                .put("pushups", userStat.getPushUps())
+                .put("situps", userStat.getSitUp())
+                .put("running_pace", userStat.getRunningPace())
+                .put("running_time", userStat.getRunningTime())
+                .put("squat", userStat.getSquat())
+                .put("bench_press", userStat.getBenchPress())
+                .put("deadlift", userStat.getDeadLift());
+
+        JSONObject requestBody = new JSONObject()
                 .put("user_id", userId)
                 .put("gender", user.getGender().toString())
-                .put("chronic",user.getChronic())
-                .put("stat",stats)
-                .put("main_category",request.getMainCategory())
-                .put("sub_category",request.getSubCategory())
-                .put("user_request",request.getUserRequest())
-                .put("injury",request.getInjury())
-                .put("goal",user.getGoal())
-                .put("lasted_quest_status",lastQuest);
+                .put("chronic", user.getChronic())
+                .put("stats", stats)
+                .put("main_category", request.getMainCategory())
+                .put("sub_category", request.getSubCategory())
+                .put("user_request", request.getUserRequest())
+                .put("goal", user.getGoal());
 
-        // 시스템 명령어 설정
-        String systemInstruction = getSystemInstruction();
-
-        HttpHeaders headers=new HttpHeaders();
+        HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        // 요청 본문에 시스템 규칙과 사용자 입력 데이터 포함
-        JSONObject body = new JSONObject();
-        body.put("contents", new JSONObject().put("parts", new JSONObject().put("text", systemInstruction+"\n"+inputJson.toString())));
-//        body.put("user_input", inputJson);
-        // HttpEntity에 요청 본문과 헤더 설정
-        HttpEntity<String> entity = new HttpEntity<>(body.toString(), headers);
+        HttpEntity<String> entity = new HttpEntity<>(requestBody.toString(), headers);
+
         try {
-            // RestTemplate을 사용하여 POST 요청 전송
-            ResponseEntity<String> response = restTemplate.exchange(API_URL, HttpMethod.POST, entity, String.class);
+            // **새로운 API URL로 요청**
+            ResponseEntity<String> response = restTemplate.exchange(
+                    "https://musical-barnacle-6ww76ggw69vfx4vq-8000.app.github.dev/query", // 변경할 API URL
+                    HttpMethod.POST,
+                    entity,
+                    String.class
+            );
 
-            // 응답 처리
             if (response.getStatusCode() == HttpStatus.OK) {
-                logger.info("Response Body: " + response.getBody());
-                JSONObject responseJson=new JSONObject(response.getBody());
 
-                JSONArray candiate= responseJson.getJSONArray("candidates");
+                // **응답 문자열에서 마크다운 제거**
+                String rawResponse = response.getBody();
+                logger.info("Raw Response: " + rawResponse);
 
-                if(candiate.length()>0){
-                    JSONObject content = candiate.getJSONObject(0).getJSONObject("content");
-                    JSONArray parts=content.getJSONArray("parts");
-                    if(parts.length()>0){
-                        String text = parts.getJSONObject(0).getString("text");
+                // 마크다운(```json\n`) 및 ``` 제거
+                String cleanedJson = rawResponse.replaceAll("```[a-zA-Z]*\\s*", "").replaceAll("```", "");
 
-                        String cleanedJson = text.replaceAll("```json\\n|```", "").trim();
-                        JSONObject parsedJson = new JSONObject(cleanedJson);
+                // \n 및 \ 제거
+                cleanedJson = cleanedJson.replace("\\n", "").replace("\\", "").trim();
 
-                        //스탯 저장해야하는 로직 들어갈 자리
-                        //daily quest 파싱
-                        JSONObject dailyQuestsJson=parsedJson.getJSONObject("daily_quests");
-
-
-                        // Fitness 퀘스트 파싱
-                        List<QuestResponse.QuestDto> fitnessQuestDtos = new ArrayList<>();
-                        JSONObject fitnessJson = dailyQuestsJson.getJSONObject("fitness");
-
-                        for (String key : fitnessJson.keySet()) {
-                            String newQuestId=generateQuestId();
-                            JSONObject questObj = fitnessJson.getJSONObject(key);
-                            QuestResponse.QuestDto questDto = QuestResponse.QuestDto.builder()
-                                    .questId(newQuestId) // UUID 기반 QuestId 생성
-                                    .content(questObj.getString("contents"))
-                                    .exp(50)
-                                    .isSuccess(false)
-                                    .build();
-                            fitnessQuestDtos.add(questDto);
-                        }
-
-                        // Sleep 퀘스트 파싱
-                        QuestResponse.QuestDto sleepQuestDto = QuestResponse.QuestDto.builder()
-                                .questId(generateQuestId()) // UUID 기반 QuestId 생성
-                                .content(dailyQuestsJson.getJSONObject("sleep").getString("contents"))
-                                .exp(50)
-                                .isSuccess(false)
-                                .build();
-
-                        // Daily 퀘스트 파싱
-                        QuestResponse.QuestDto dailyQuestDto = QuestResponse.QuestDto.builder()
-                                .questId(generateQuestId()) // UUID 기반 QuestId 생성
-                                .content(dailyQuestsJson.getJSONObject("daily").getString("contents"))
-                                .exp(50)
-                                .isSuccess(false)
-                                .build();
-
-                        // 최종 객체 생성
-                        QuestResponse.DailyQuest dailyQuestObject = QuestResponse.DailyQuest.builder()
-                                .fitness(fitnessQuestDtos)
-                                .sleep(sleepQuestDto)
-                                .daily(dailyQuestDto)
-                                .build();
-
-                        return QuestResponse.CreateQuestsResponse.builder()// 여기에 실제 DB에서 생성된 결과 ID 넣을 것
-                                .dailyQuest(dailyQuestObject)
-                                .build();
-
-                    }
-
-
+                // 문자열이 큰따옴표로 감싸져 있는 경우 제거
+                if (cleanedJson.startsWith("\"") && cleanedJson.endsWith("\"")) {
+                    cleanedJson = cleanedJson.substring(1, cleanedJson.length() - 1);
                 }
-                // 응답을 처리하고 StatResponse로 반환 (JSON 파싱)
-                return null;
+
+                // 로그 출력 (정리된 JSON)
+                logger.info("Cleaned JSON: " + cleanedJson);
+
+                // **JSON 파싱**
+                JSONObject responseJson = new JSONObject(cleanedJson);
+
+                // **응답 JSON에서 올바른 키 값 사용 (daily_quests)**
+                JSONObject dailyQuestsJson = responseJson.getJSONObject("daily_quests");
+
+                // **Fitness 퀘스트 파싱**
+                List<QuestResponse.QuestDto> fitnessQuestDtos = new ArrayList<>();
+                JSONObject fitnessObject = dailyQuestsJson.getJSONObject("fitness");
+
+                for (String key : fitnessObject.keySet()) {
+                    JSONObject questObj = fitnessObject.getJSONObject(key);
+                    QuestResponse.QuestDto questDto = QuestResponse.QuestDto.builder()
+                            .questId(generateQuestId())
+                            .content(questObj.getString("contents"))  // "description" → "contents"
+                            .exp(questObj.getInt("points"))           // "exp" → "points"
+                            .isSuccess(false)
+                            .build();
+                    fitnessQuestDtos.add(questDto);
+                }
+
+                // **수면(Sleep) 퀘스트 파싱**
+                QuestResponse.QuestDto sleepQuestDto = QuestResponse.QuestDto.builder()
+                        .questId(generateQuestId())
+                        .content(dailyQuestsJson.getJSONObject("sleep").getString("contents")) // "description" → "contents"
+                        .exp(dailyQuestsJson.getJSONObject("sleep").getInt("points"))         // "exp" → "points"
+                        .isSuccess(false)
+                        .build();
+
+                // **일상(Daily) 퀘스트 파싱**
+                QuestResponse.QuestDto dailyQuestDto = QuestResponse.QuestDto.builder()
+                        .questId(generateQuestId())
+                        .content(dailyQuestsJson.getJSONObject("daily").getString("contents")) // "description" → "contents"
+                        .exp(dailyQuestsJson.getJSONObject("daily").getInt("points"))         // "exp" → "points"
+                        .isSuccess(false)
+                        .build();
+
+                // **최종 응답 객체 생성**
+                QuestResponse.DailyQuest dailyQuestObject = QuestResponse.DailyQuest.builder()
+                        .fitness(fitnessQuestDtos)
+                        .sleep(sleepQuestDto)
+                        .daily(dailyQuestDto)
+                        .build();
+
+                return QuestResponse.CreateQuestsResponse.builder()
+                        .dailyQuest(dailyQuestObject)
+                        .build();
+
+
+
             } else {
                 logger.error("Error Response: " + response.getStatusCode());
                 throw new Exception("Failed to get a valid response: " + response.getStatusCode());
             }
+        } catch (JSONException e) {
+            logger.error("JSON Parsing Error: " + e.getMessage());
         } catch (Exception e) {
             logger.error("Error Response: " + e);
         }
 
         return null;
-
-
     }
+
     @Transactional
     public QuestResponse.AcceptQuestsResponse acceptQuestService(QuestRequest.AcceptQuestRequest request, String userId){
         User user=userRepository.findById(userId).orElse(null);

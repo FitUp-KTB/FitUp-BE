@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,108 +42,117 @@ public class StatServiceImpl implements StatService {
     private  String API_URL;
 
     public StatResponse.CreateStatResponse CreateStatService(StatRequest.CreateStatRequest request, String userId) throws Exception {
-
+        User user=userRepository.findById(userId).orElse(null);
         //DB에서 새로 값 가져올거 가져와야함(gender,height,weight)
         // JSON 형식으로 입력 데이터 설정
         JSONObject inputJson = new JSONObject()
                 .put("user_id", userId)
-                .put("gender", "male")
-                .put("chronic","척추측만증")
-                .put("height", 175)
-                .put("weight", 70)
-                .put("muscle_mass", 35)
-                .put("body_fat", 18)
-                .put("pushups", 90)
-                .put("situps", 50)
-                .put("running_pace", 5.0)
-                .put("running_time", 5)
-                .put("squat", 900)
-                .put("bench_press", 80)
-                .put("deadlift", 120);
+                .put("gender", user.getGender().toString())
+                .put("chronic",user.getChronic())
+                .put("height", request.getHeight())
+                .put("weight", request.getWeight())
+                .put("muscle_mass", request.getMuscleMass())
+                .put("body_fat", request.getBodyFat())
+                .put("pushups", request.getPushUps())
+                .put("situps", request.getSitUps())
+                .put("running_pace", request.getRunningPace())
+                .put("running_time", request.getRunningTime())
+                .put("squat", request.getSquat())
+                .put("bench_press", request.getBenchPress())
+                .put("deadlift", request.getDeadLift());
 
-        // 시스템 명령어 설정
-        String systemInstruction = getSystemInstruction();
-        User user=userRepository.findById(userId).orElse(null);
-        HttpHeaders headers=new HttpHeaders();
+        // HTTP 요청 헤더 설정
+        HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        // 요청 본문에 시스템 규칙과 사용자 입력 데이터 포함
-        JSONObject body = new JSONObject();
-        body.put("contents", new JSONObject().put("parts", new JSONObject().put("text", systemInstruction+"\n"+inputJson.toString())));
+        // HTTP 요청 바디 설정
+        HttpEntity<String> entity = new HttpEntity<>(inputJson.toString(), headers);
 
-        // HttpEntity에 요청 본문과 헤더 설정
-        HttpEntity<String> entity = new HttpEntity<>(body.toString(), headers);
         try {
-            // RestTemplate을 사용하여 POST 요청 전송
-            ResponseEntity<String> response = restTemplate.exchange(API_URL, HttpMethod.POST, entity, String.class);
+            // API 호출 (새로운 URL 적용)
+            ResponseEntity<String> response = restTemplate.exchange(
+                    "https://musical-barnacle-6ww76ggw69vfx4vq-8000.app.github.dev/stats",
+                    HttpMethod.POST,
+                    entity,
+                    String.class
+            );
 
             // 응답 처리
             if (response.getStatusCode() == HttpStatus.OK) {
-                logger.info("Response Body: " + response.getBody());
-                JSONObject responseJson=new JSONObject(response.getBody());
+                logger.info("Raw Response: " + response.getBody());
 
-                JSONArray candiate= responseJson.getJSONArray("candidates");
+                // 마크다운 제거 (` ```json\n ` 같은 형식)
+                String cleanedJson = response.getBody()
+                        .replaceAll("```[a-zA-Z]*\\s*", "") // ```json\n 또는 ``` 제거
+                        .replaceAll("```", "") // 남아있는 ``` 제거
+                        .replace("\\n", "") // \n 제거
+                        .replace("\\", ""); // \ 제거
 
-                if(candiate.length()>0){
-                    JSONObject content = candiate.getJSONObject(0).getJSONObject("content");
-                    JSONArray parts=content.getJSONArray("parts");
-                    if(parts.length()>0){
-                        String text = parts.getJSONObject(0).getString("text");
-
-                        String cleanedJson = text.replaceAll("```json\\n|```", "").trim();
-                        JSONObject parsedJson = new JSONObject(cleanedJson);
-                        int strength=parsedJson.getInt("strength");
-                        int endurance=parsedJson.getInt("endurance");
-                        int speed=parsedJson.getInt("speed");
-                        int flexibility=parsedJson.getInt("flexibility");
-                        int stamina=parsedJson.getInt("stamina");
-                        String charcterType= parsedJson.getString("character_type");
-                        //요청 값 저장
-                        UserStat userStat= UserStat.builder()
-                                .user(user)
-                                .fat(request.getBodyFat())
-                                .height(request.getHeight())
-                                .weight(request.getWeight())
-                                .muscleMass(request.getMuscleMass())
-                                .pushUps(request.getPushUps())
-                                .sitUp(request.getSitUps())
-                                .runningPace(request.getRunningPace())
-                                .runningTime(request.getRunningTime())
-                                .squat(request.getSquat())
-                                .benchPress(request.getBenchPress())
-                                .deadLift(request.getDeadLift()).build();
-                        UserStat newUserStat=statRepository.save(userStat);
-                        log.info(String.valueOf(newUserStat.getUserStatSeq()));
-                        statRepository.flush();
-                        //응답 값 저장
-                        UserStatResult userStatResult=UserStatResult.builder()
-                                .userStat(newUserStat)
-                                .strength(strength)
-                                .endurance(endurance)
-                                .speed(speed)
-                                .flexibility(flexibility)
-                                .stamina(stamina)
-                                .characterType(CharacterType.valueOf(charcterType)).build();
-
-                        UserStatResult newUserStatResult = userStatResultRepository.save(userStatResult);
-                        return StatResponse.CreateStatResponse.builder()
-                                .userStatSeq(newUserStat.getUserStatSeq())
-                                .strength(strength)
-                                .endurance(endurance)
-                                .speed(speed)
-                                .flexibility(flexibility)
-                                .stamina(stamina)
-                                .characterType(userStatResult.getCharacterType().toString()).build();
-                    }
-
-
+                // 문자열이 큰따옴표로 감싸진 경우 제거
+                if (cleanedJson.startsWith("\"") && cleanedJson.endsWith("\"")) {
+                    cleanedJson = cleanedJson.substring(1, cleanedJson.length() - 1);
                 }
-                // 응답을 처리하고 StatResponse로 반환 (JSON 파싱)
-                return null;
+
+                logger.info("Cleaned JSON: " + cleanedJson);
+
+                // JSON 파싱
+                JSONObject responseJson = new JSONObject(cleanedJson);
+
+                // 필요한 데이터 추출
+                int strength = responseJson.getInt("strength");
+                int endurance = responseJson.getInt("endurance");
+                int speed = responseJson.getInt("speed");
+                int flexibility = responseJson.getInt("flexibility");
+                int stamina = responseJson.getInt("stamina");
+                String characterType = responseJson.getString("character_type");
+
+                // 요청 값 저장
+                UserStat userStat = UserStat.builder()
+                        .user(user)
+                        .fat(request.getBodyFat())
+                        .height(request.getHeight())
+                        .weight(request.getWeight())
+                        .muscleMass(request.getMuscleMass())
+                        .pushUps(request.getPushUps())
+                        .sitUp(request.getSitUps())
+                        .runningPace(request.getRunningPace())
+                        .runningTime(request.getRunningTime())
+                        .squat(request.getSquat())
+                        .benchPress(request.getBenchPress())
+                        .deadLift(request.getDeadLift())
+                        .build();
+                UserStat newUserStat = statRepository.save(userStat);
+                log.info(String.valueOf(newUserStat.getUserStatSeq()));
+                statRepository.flush();
+
+                // 응답 값 저장
+                UserStatResult userStatResult = UserStatResult.builder()
+                        .userStat(newUserStat)
+                        .strength(strength)
+                        .endurance(endurance)
+                        .speed(speed)
+                        .flexibility(flexibility)
+                        .stamina(stamina)
+                        .characterType(CharacterType.valueOf(characterType))
+                        .build();
+
+                UserStatResult newUserStatResult = userStatResultRepository.save(userStatResult);
+
+                return StatResponse.CreateStatResponse.builder()
+                        .userStatSeq(newUserStat.getUserStatSeq())
+                        .strength(strength)
+                        .endurance(endurance)
+                        .speed(speed)
+                        .flexibility(flexibility)
+                        .stamina(stamina)
+                        .characterType(newUserStatResult.getCharacterType().toString())
+                        .build();
             } else {
                 logger.error("Error Response: " + response.getStatusCode());
                 throw new Exception("Failed to get a valid response: " + response.getStatusCode());
             }
+        } catch (JSONException e) {
+            logger.error("JSON Parsing Error: " + e.getMessage());
         } catch (Exception e) {
             logger.error("Error Response: " + e);
         }
