@@ -42,11 +42,10 @@ public class QuestController {
                 .sleep(sleep)
                 .daily(daily)
                 .build();
-//        return new ApiResponse<>(QuestResponse.CreateQuestsResponse.builder()
-//                .dailyResultSeq(12)
-//                .dailyQuest(quests).build());
+        return new ApiResponse<>(QuestResponse.CreateQuestsResponse.builder()
+                .dailyQuest(quests).build());
 
-        return new ApiResponse<>(questService.createQuestsService(request,"123"));
+//        return new ApiResponse<>(questService.createQuestsService(request,"123"));
     }
     @GetMapping("")
     public ApiResponse<QuestResponse.GetQuestsResponse>GetQuestsController(@RequestHeader("Authorization") String token){
