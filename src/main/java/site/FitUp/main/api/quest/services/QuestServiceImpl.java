@@ -1,5 +1,6 @@
 package site.FitUp.main.api.quest.services;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
@@ -12,6 +13,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import site.FitUp.main.api.quest.dtos.QuestRequest;
 import site.FitUp.main.api.quest.dtos.QuestResponse;
+import site.FitUp.main.common.enums.QuestStatus;
+import site.FitUp.main.model.DailyResult;
+import site.FitUp.main.model.User;
+import site.FitUp.main.model.UserStat;
+import site.FitUp.main.model.UserStatResult;
+import site.FitUp.main.repository.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,32 +29,41 @@ import java.util.UUID;
 @Slf4j
 public class QuestServiceImpl implements QuestService{
     private final RestTemplate restTemplate;
+    private final UserStatRepository userStatRepository;
+    private final UserStatResultRepository userStatResultRepository;
+    private final UserRepository userRepository;
+    private final QuestRepository questRepository;
+    private final DailyResultRepository dailyResultRepository;
     @Value("${gemini.api.key}")
     private  String API_URL;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     public QuestResponse.CreateQuestsResponse createQuestsService(QuestRequest.CreateQuestsRequest request, String userId){
+        User user= userRepository.findById(userId).orElse(null);
+        UserStat userStat=userStatRepository.findTopByUserOrderByCreatedAtDesc(user);
+        UserStatResult userStatResult=userStatResultRepository.findByUserStat(userStat);
         //더미 인풋 데이터
         String[] completedQuest={"벤치 프레스 60kg 5세트"};
         String[] failedQuest={"하루 2L 물 섭취"};
         //DB에서 새로 값 가져올거 가져와야함(gender,height,weight)
         JSONObject stats=new JSONObject()
-                .put("strength",70)
-                .put("stamina",60)
-                .put("endurance",50);
+                .put("strength",userStatResult.getStrength())
+                .put("stamina",userStatResult.getStamina())
+                .put("endurance",userStatResult.getEndurance());
         JSONObject lastQuest=new JSONObject()
                 .put("completed",completedQuest)
                 .put("failed",failedQuest);
         // JSON 형식으로 입력 데이터 설정
         JSONObject inputJson = new JSONObject()
-                .put("user_id", "12345")
-                .put("gender", "male")
-                .put("chronic","척추측만증")
+                .put("user_id", userId)
+                .put("gender", user.getGender().toString())
+                .put("chronic",user.getChronic())
                 .put("stat",stats)
-                .put("main_category","헬스")
-                .put("sub_category","하체")
-                .put("user_request","오늘은 하체 운동을 하고 싶어")
-                .put("goal","근력증가")
+                .put("main_category",request.getMainCategory())
+                .put("sub_category",request.getSubCategory())
+                .put("user_request",request.getUserRequest())
+                .put("injury",request.getInjury())
+                .put("goal",user.getGoal())
                 .put("lasted_quest_status",lastQuest);
 
         // 시스템 명령어 설정
@@ -92,9 +108,10 @@ public class QuestServiceImpl implements QuestService{
                         JSONObject fitnessJson = dailyQuestsJson.getJSONObject("fitness");
 
                         for (String key : fitnessJson.keySet()) {
+                            String newQuestId=generateQuestId();
                             JSONObject questObj = fitnessJson.getJSONObject(key);
                             QuestResponse.QuestDto questDto = QuestResponse.QuestDto.builder()
-                                    .questId(generateQuestId()) // UUID 기반 QuestId 생성
+                                    .questId(newQuestId) // UUID 기반 QuestId 생성
                                     .content(questObj.getString("contents"))
                                     .isSuccess(false)
                                     .build();
@@ -122,8 +139,7 @@ public class QuestServiceImpl implements QuestService{
                                 .daily(dailyQuestDto)
                                 .build();
 
-                        return QuestResponse.CreateQuestsResponse.builder()
-                                .dailyResultSeq(1001) // 여기에 실제 DB에서 생성된 결과 ID 넣을 것
+                        return QuestResponse.CreateQuestsResponse.builder()// 여기에 실제 DB에서 생성된 결과 ID 넣을 것
                                 .dailyQuest(dailyQuestObject)
                                 .build();
 
@@ -145,7 +161,21 @@ public class QuestServiceImpl implements QuestService{
 
 
     }
+    @Transactional
+    public QuestResponse.AcceptQuestsResponse acceptQuestService(QuestRequest.AcceptQuestRequest request, String userId){
+        User user=userRepository.findById(userId).orElse(null);
+        //데일리 퀘스트 생성
+        DailyResult dailyResult=DailyResult.builder()
+                .questStatus(QuestStatus.FAIL)
+                .pointSum(0)
+                .questSuccessCount(0)
+                .user(user).build();
+        DailyResult newDailyResult=dailyResultRepository.save(dailyResult);
 
+        //피트니스 퀘스트
+        return null;
+
+    }
     public String getSystemInstruction(){
         return  """
                     너는 사람들의 운동을 돕는 게임 기반의 퀘스트 생성 시스템이야

@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class DailyResult {
+public class DailyResult extends BaseTime{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "daily_result_seq")
@@ -32,14 +32,6 @@ public class DailyResult {
     @Column(nullable = false)
     private QuestStatus questStatus;
 
-    @Column(nullable = false)
-    private LocalDateTime createdAt;
-
-    @Column(nullable = false)
-    private LocalDateTime updatedAt;
-
-    @Column(nullable = false, columnDefinition = "TEXT")
-    private String reqCommend;
 
     @Column(nullable = false)
     private Integer pointSum;

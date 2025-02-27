@@ -22,7 +22,12 @@ public class QuestResponse {
     }
     @Builder
     @Getter
-    public static class CreateQuestsResponse{
+    public static class CreateQuestsResponse {
+        private DailyQuest dailyQuest;
+    }
+    @Builder
+    @Getter
+    public static class AcceptQuestsResponse {
         private int dailyResultSeq;
         private DailyQuest dailyQuest;
     }

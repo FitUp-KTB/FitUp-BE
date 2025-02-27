@@ -6282,3 +6282,168 @@ Caused by: org.hibernate.MappingException: Column 'user_stat_seq' is duplicated 
 2025-02-27T19:15:09.772+09:00  INFO 19944 --- [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
 2025-02-27T19:15:09.773+09:00  INFO 19944 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
 2025-02-27T19:15:09.958+09:00  INFO 19944 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-02-27T19:26:29.416+09:00  INFO 6000 --- [main] site.FitUp.main.MainApplication          : Starting MainApplication using Java 21.0.5 with PID 6000 (C:\Users\장준용\Documents\GitHub\FitUp-BE\build\classes\java\main started by 장준용 in C:\Users\장준용\Documents\GitHub\FitUp-BE)
+2025-02-27T19:26:29.418+09:00 DEBUG 6000 --- [main] site.FitUp.main.MainApplication          : Running with Spring Boot v3.4.3, Spring v6.2.3
+2025-02-27T19:26:29.418+09:00  INFO 6000 --- [main] site.FitUp.main.MainApplication          : No active profile set, falling back to 1 default profile: "default"
+2025-02-27T19:26:30.177+09:00  INFO 6000 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-02-27T19:26:30.269+09:00  INFO 6000 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 83 ms. Found 5 JPA repository interfaces.
+2025-02-27T19:26:30.787+09:00  INFO 6000 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-02-27T19:26:30.802+09:00  INFO 6000 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-02-27T19:26:30.802+09:00  INFO 6000 --- [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.36]
+2025-02-27T19:26:30.851+09:00  INFO 6000 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-02-27T19:26:30.851+09:00  INFO 6000 --- [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1381 ms
+2025-02-27T19:26:30.976+09:00  INFO 6000 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-02-27T19:26:31.435+09:00  INFO 6000 --- [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@6e3dd5ce
+2025-02-27T19:26:31.438+09:00  INFO 6000 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-02-27T19:26:31.496+09:00  INFO 6000 --- [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-02-27T19:26:31.546+09:00  INFO 6000 --- [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.8.Final
+2025-02-27T19:26:31.590+09:00  INFO 6000 --- [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-02-27T19:26:31.940+09:00  INFO 6000 --- [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-02-27T19:26:32.101+09:00  INFO 6000 --- [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 8.0.40
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-02-27T19:26:33.226+09:00  INFO 6000 --- [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-02-27T19:26:33.230+09:00  INFO 6000 --- [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-02-27T19:26:33.684+09:00  WARN 6000 --- [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-02-27T19:26:34.092+09:00  INFO 6000 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2025-02-27T19:26:34.099+09:00  INFO 6000 --- [main] site.FitUp.main.MainApplication          : Started MainApplication in 5.278 seconds (process running for 5.888)
+2025-02-27T19:26:39.114+09:00  INFO 6000 --- [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-02-27T19:26:39.114+09:00  INFO 6000 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-02-27T19:26:39.116+09:00  INFO 6000 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
+2025-02-27T19:34:12.063+09:00  INFO 6000 --- [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2025-02-27T19:34:12.069+09:00  INFO 6000 --- [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2025-02-27T19:34:12.073+09:00  INFO 6000 --- [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-02-27T19:34:12.074+09:00  INFO 6000 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-02-27T19:34:12.163+09:00  INFO 6000 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-02-27T19:34:16.656+09:00  INFO 25860 --- [main] site.FitUp.main.MainApplication          : Starting MainApplication using Java 21.0.5 with PID 25860 (C:\Users\장준용\Documents\GitHub\FitUp-BE\build\classes\java\main started by 장준용 in C:\Users\장준용\Documents\GitHub\FitUp-BE)
+2025-02-27T19:34:16.657+09:00 DEBUG 25860 --- [main] site.FitUp.main.MainApplication          : Running with Spring Boot v3.4.3, Spring v6.2.3
+2025-02-27T19:34:16.658+09:00  INFO 25860 --- [main] site.FitUp.main.MainApplication          : No active profile set, falling back to 1 default profile: "default"
+2025-02-27T19:34:17.387+09:00  INFO 25860 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-02-27T19:34:17.473+09:00  INFO 25860 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 78 ms. Found 5 JPA repository interfaces.
+2025-02-27T19:34:17.982+09:00  INFO 25860 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-02-27T19:34:17.998+09:00  INFO 25860 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-02-27T19:34:17.998+09:00  INFO 25860 --- [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.36]
+2025-02-27T19:34:18.062+09:00  INFO 25860 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-02-27T19:34:18.064+09:00  INFO 25860 --- [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1360 ms
+2025-02-27T19:34:18.207+09:00  INFO 25860 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-02-27T19:34:18.653+09:00  INFO 25860 --- [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@6e3dd5ce
+2025-02-27T19:34:18.655+09:00  INFO 25860 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-02-27T19:34:18.713+09:00  INFO 25860 --- [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-02-27T19:34:18.764+09:00  INFO 25860 --- [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.8.Final
+2025-02-27T19:34:18.800+09:00  INFO 25860 --- [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-02-27T19:34:19.113+09:00  INFO 25860 --- [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-02-27T19:34:19.240+09:00  INFO 25860 --- [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 8.0.40
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-02-27T19:34:20.216+09:00  INFO 25860 --- [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-02-27T19:34:20.221+09:00  INFO 25860 --- [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-02-27T19:34:20.613+09:00  WARN 25860 --- [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-02-27T19:34:21.009+09:00  INFO 25860 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2025-02-27T19:34:21.018+09:00  INFO 25860 --- [main] site.FitUp.main.MainApplication          : Started MainApplication in 4.84 seconds (process running for 5.42)
+2025-02-27T19:34:27.636+09:00  INFO 25860 --- [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-02-27T19:34:27.636+09:00  INFO 25860 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-02-27T19:34:27.638+09:00  INFO 25860 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2025-02-27T19:34:28.162+09:00 ERROR 25860 --- [http-nio-8080-exec-1] o.a.c.c.C.[.[.[/].[dispatcherServlet]    : Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed: java.lang.NullPointerException: Cannot invoke "site.FitUp.main.model.UserStatResult.getStrength()" because "userStatResult" is null] with root cause
+
+java.lang.NullPointerException: Cannot invoke "site.FitUp.main.model.UserStatResult.getStrength()" because "userStatResult" is null
+	at site.FitUp.main.api.quest.services.QuestServiceImpl.createQuestsService(QuestServiceImpl.java:47) ~[main/:na]
+	at site.FitUp.main.api.quest.controller.QuestController.CreateQuestController(QuestController.java:49) ~[main/:na]
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[na:na]
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:257) ~[spring-web-6.2.3.jar:6.2.3]
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:190) ~[spring-web-6.2.3.jar:6.2.3]
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118) ~[spring-webmvc-6.2.3.jar:6.2.3]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:986) ~[spring-webmvc-6.2.3.jar:6.2.3]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:891) ~[spring-webmvc-6.2.3.jar:6.2.3]
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-6.2.3.jar:6.2.3]
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1088) ~[spring-webmvc-6.2.3.jar:6.2.3]
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:978) ~[spring-webmvc-6.2.3.jar:6.2.3]
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014) ~[spring-webmvc-6.2.3.jar:6.2.3]
+	at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:914) ~[spring-webmvc-6.2.3.jar:6.2.3]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:590) ~[tomcat-embed-core-10.1.36.jar:6.0]
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885) ~[spring-webmvc-6.2.3.jar:6.2.3]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658) ~[tomcat-embed-core-10.1.36.jar:6.0]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:195) ~[tomcat-embed-core-10.1.36.jar:10.1.36]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.36.jar:10.1.36]
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51) ~[tomcat-embed-websocket-10.1.36.jar:10.1.36]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.36.jar:10.1.36]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.36.jar:10.1.36]
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100) ~[spring-web-6.2.3.jar:6.2.3]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.3.jar:6.2.3]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.36.jar:10.1.36]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.36.jar:10.1.36]
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93) ~[spring-web-6.2.3.jar:6.2.3]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.3.jar:6.2.3]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.36.jar:10.1.36]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.36.jar:10.1.36]
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201) ~[spring-web-6.2.3.jar:6.2.3]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.3.jar:6.2.3]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.36.jar:10.1.36]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.36.jar:10.1.36]
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167) ~[tomcat-embed-core-10.1.36.jar:10.1.36]
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90) ~[tomcat-embed-core-10.1.36.jar:10.1.36]
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:483) ~[tomcat-embed-core-10.1.36.jar:10.1.36]
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115) ~[tomcat-embed-core-10.1.36.jar:10.1.36]
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93) ~[tomcat-embed-core-10.1.36.jar:10.1.36]
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74) ~[tomcat-embed-core-10.1.36.jar:10.1.36]
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344) ~[tomcat-embed-core-10.1.36.jar:10.1.36]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:397) ~[tomcat-embed-core-10.1.36.jar:10.1.36]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63) ~[tomcat-embed-core-10.1.36.jar:10.1.36]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:905) ~[tomcat-embed-core-10.1.36.jar:10.1.36]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1743) ~[tomcat-embed-core-10.1.36.jar:10.1.36]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) ~[tomcat-embed-core-10.1.36.jar:10.1.36]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1190) ~[tomcat-embed-core-10.1.36.jar:10.1.36]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659) ~[tomcat-embed-core-10.1.36.jar:10.1.36]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63) ~[tomcat-embed-core-10.1.36.jar:10.1.36]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+
+2025-02-27T19:35:16.727+09:00  INFO 25860 --- [http-nio-8080-exec-4] s.F.m.a.quest.services.QuestServiceImpl  : Response Body: {
+  "candidates": [
+    {
+      "content": {
+        "parts": [
+          {
+            "text": "```json\n{\n  \"user_id\": \"USER-8aa26034\",\n  \"daily_quests\": {\n    \"fitness\": {\n      \"1\": {\"contents\": \"바벨 스쿼트 100kg 5세트 수행\", \"points\": 20},\n      \"2\": {\"contents\": \"컨벤셔널 데드리프트 120kg 3세트 수행 (자세 유지에 집중)\", \"points\": 20},\n      \"3\": {\"contents\": \"레그프레스 200kg 5세트\", \"points\": 20}\n    },\n    \"sleep\": {\"contents\": \"수면 8시간 유지\", \"points\": 5},\n    \"daily\": {\"contents\": \"매일 스트레칭 20분 (목, 어깨 위주)\", \"points\": 5}\n  }\n}\n```\n"
+          }
+        ],
+        "role": "model"
+      },
+      "finishReason": "STOP",
+      "avgLogprobs": -0.0579318367474452
+    }
+  ],
+  "usageMetadata": {
+    "promptTokenCount": 896,
+    "candidatesTokenCount": 211,
+    "totalTokenCount": 1107,
+    "promptTokensDetails": [
+      {
+        "modality": "TEXT",
+        "tokenCount": 896
+      }
+    ],
+    "candidatesTokensDetails": [
+      {
+        "modality": "TEXT",
+        "tokenCount": 211
+      }
+    ]
+  },
+  "modelVersion": "gemini-2.0-flash"
+}
+
+2025-02-27T19:52:46.270+09:00  INFO 25860 --- [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2025-02-27T19:52:46.280+09:00  INFO 25860 --- [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2025-02-27T19:52:46.288+09:00  INFO 25860 --- [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-02-27T19:52:46.293+09:00  INFO 25860 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-02-27T19:52:46.467+09:00  INFO 25860 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.

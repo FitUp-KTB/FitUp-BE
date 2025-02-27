@@ -7,6 +7,7 @@ import site.FitUp.main.api.quest.dtos.QuestResponse;
 import site.FitUp.main.api.quest.services.QuestService;
 import site.FitUp.main.common.ApiResponse;
 import site.FitUp.main.common.enums.QuestStatus;
+import site.FitUp.main.util.JwtUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +19,7 @@ public class QuestController {
     private final QuestService questService;
     @PostMapping("")
     public ApiResponse<QuestResponse.CreateQuestsResponse>CreateQuestController(@RequestHeader("Authorization") String token, @RequestBody QuestRequest.CreateQuestsRequest request){
-//        questService.createQuestsService(request,"123");
+        String userId= JwtUtil.extractUserId(token);
         List<QuestResponse.QuestDto> fitness=new ArrayList<>();
         fitness.add(QuestResponse.QuestDto.builder()
                 .questId("QUEST1")
@@ -45,7 +46,7 @@ public class QuestController {
         return new ApiResponse<>(QuestResponse.CreateQuestsResponse.builder()
                 .dailyQuest(quests).build());
 
-//        return new ApiResponse<>(questService.createQuestsService(request,"123"));
+//        return new ApiResponse<>(questService.createQuestsService(request,userId));
     }
     @GetMapping("")
     public ApiResponse<QuestResponse.GetQuestsResponse>GetQuestsController(@RequestHeader("Authorization") String token){
@@ -112,7 +113,7 @@ public class QuestController {
                 .currentExp(400).build());
     }
     @PostMapping("/accept")
-    public ApiResponse<QuestResponse.CreateQuestsResponse>AcceptQuestsController(@RequestHeader("Authorization")String token){
+    public ApiResponse<QuestResponse.AcceptQuestsResponse>AcceptQuestsController(@RequestHeader("Authorization")String token){
         List<QuestResponse.QuestDto> fitness=new ArrayList<>();
         fitness.add(QuestResponse.QuestDto.builder()
                 .questId("QUEST1")
@@ -136,7 +137,7 @@ public class QuestController {
                 .sleep(sleep)
                 .daily(daily)
                 .build();
-        return new ApiResponse<>(QuestResponse.CreateQuestsResponse.builder()
+        return new ApiResponse<>(QuestResponse.AcceptQuestsResponse.builder()
                 .dailyResultSeq(12)
                 .dailyQuest(quests).build());
     }
