@@ -36,8 +36,8 @@ public class UserController {
         return new ApiResponse<>(userService.LoginUserService(request));
     }
     @PostMapping("/target")
-    public ApiResponse<UserResponse.EditTargetResponse> EditTargetController(@RequestBody UserRequest.EditUserRequest request){
-        return new ApiResponse<>(UserResponse.EditTargetResponse.builder()
-                .content(request.getContent()).build());
+    public ApiResponse<UserResponse.EditTargetResponse> EditTargetController(@RequestHeader("Authorization") String token,@RequestBody UserRequest.EditUserRequest request){
+        String userId = JwtUtil.extractUserId(token);
+        return new ApiResponse<>(userService.EditTargetService(request,userId));
     }
 }

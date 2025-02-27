@@ -1,5 +1,6 @@
 package site.FitUp.main.api.user.services;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -53,6 +54,15 @@ public class UserServiceImpl implements UserService {
                     .refreshToken(JwtUtil.generateToken(user.getUserId())).build();
         }
     }
+    @Transactional
+    public UserResponse.EditTargetResponse EditTargetService(UserRequest.EditUserRequest request,String userId){
+        User user= userRepository.findById(userId).orElse(null);
+        user.setGoal(request.getContent());
+        return UserResponse.EditTargetResponse.builder().content(request.getContent()).build();
+    }
+
+
+    ///
     private String generateUserId() {
         return "USER-" + UUID.randomUUID().toString().replaceAll("-", "").substring(0, 8); // 8자리 랜덤 ID
     }

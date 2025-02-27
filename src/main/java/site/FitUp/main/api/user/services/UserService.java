@@ -8,4 +8,6 @@ public interface UserService {
 
     UserResponse.LoginUserResponse LoginUserService(UserRequest.LoginUserRequest request) throws IllegalAccessException;
 
+    UserResponse.EditTargetResponse EditTargetService(UserRequest.EditUserRequest request,String userId);
+
 }
