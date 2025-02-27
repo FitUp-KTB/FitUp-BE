@@ -18,4 +18,5 @@ services:
   
 networks:
   fitup-network:
+    name: fitup-network
     driver: bridge
