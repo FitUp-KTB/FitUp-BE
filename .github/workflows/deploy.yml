@@ -2,7 +2,7 @@ name: CI/CD Pipeline for Backend
 'on':
   push:
     branches:
-      - feat/cicd/#2
+      - main
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
