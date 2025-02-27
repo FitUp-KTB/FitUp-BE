@@ -18,7 +18,7 @@ import java.util.List;
 public class StatController {
     private final StatService statService;
     @PostMapping("")
-    public ApiResponse<StatResponse.CreateStatResponse> CreateStatController(@RequestBody StatRequest.CreateStatRequest reqeust,@RequestHeader("Authorization") String token) throws Exception {
+    public ApiResponse<StatResponse.CreateStatResponse> CreateStatController(@RequestBody StatRequest.CreateStatRequest request,@RequestHeader("Authorization") String token) throws Exception {
         String userId= JwtUtil.extractUserId(token);
 //        statService.CreateStatService(reqeust,"123");
 //        return new ApiResponse<>(StatResponse.CreateStatResponse.builder()
@@ -29,7 +29,7 @@ public class StatController {
 //                .flexibility(65)
 //                .stamina(80)
 //                .characterType(CharacterType.POWER.toString()).build());
-        return new ApiResponse<>(statService.CreateStatService(reqeust,userId));
+        return new ApiResponse<>(statService.CreateStatService(request,userId));
     }
     @GetMapping("")
     public ApiResponse<StatResponse.GetStatsResponse> GetStatsController(@RequestHeader("Authorization") String token){

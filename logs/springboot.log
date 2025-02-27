@@ -4286,3 +4286,188 @@ java.lang.IllegalArgumentException: Invalid character found in method name [0x16
 2025-02-27T17:48:34.311+09:00  INFO 26972 --- [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
 2025-02-27T17:48:34.314+09:00  INFO 26972 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
 2025-02-27T17:48:34.464+09:00  INFO 26972 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-02-27T18:02:51.096+09:00  INFO 29844 --- [main] site.FitUp.main.MainApplication          : Starting MainApplication using Java 21.0.5 with PID 29844 (C:\Users\장준용\Documents\GitHub\FitUp-BE\build\classes\java\main started by 장준용 in C:\Users\장준용\Documents\GitHub\FitUp-BE)
+2025-02-27T18:02:51.099+09:00 DEBUG 29844 --- [main] site.FitUp.main.MainApplication          : Running with Spring Boot v3.4.3, Spring v6.2.3
+2025-02-27T18:02:51.100+09:00  INFO 29844 --- [main] site.FitUp.main.MainApplication          : No active profile set, falling back to 1 default profile: "default"
+2025-02-27T18:02:51.840+09:00  INFO 29844 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-02-27T18:02:51.919+09:00  INFO 29844 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 70 ms. Found 5 JPA repository interfaces.
+2025-02-27T18:02:52.449+09:00  INFO 29844 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-02-27T18:02:52.463+09:00  INFO 29844 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-02-27T18:02:52.463+09:00  INFO 29844 --- [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.36]
+2025-02-27T18:02:52.516+09:00  INFO 29844 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-02-27T18:02:52.516+09:00  INFO 29844 --- [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1349 ms
+2025-02-27T18:02:52.643+09:00  INFO 29844 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-02-27T18:02:53.408+09:00  INFO 29844 --- [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@66713605
+2025-02-27T18:02:53.411+09:00  INFO 29844 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-02-27T18:02:53.478+09:00  INFO 29844 --- [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-02-27T18:02:53.559+09:00  INFO 29844 --- [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.8.Final
+2025-02-27T18:02:53.603+09:00  INFO 29844 --- [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-02-27T18:02:53.979+09:00  INFO 29844 --- [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-02-27T18:02:54.150+09:00  INFO 29844 --- [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 8.0.40
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-02-27T18:02:55.254+09:00  INFO 29844 --- [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-02-27T18:02:55.260+09:00  INFO 29844 --- [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-02-27T18:02:55.667+09:00  WARN 29844 --- [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-02-27T18:02:56.085+09:00  INFO 29844 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2025-02-27T18:02:56.091+09:00  INFO 29844 --- [main] site.FitUp.main.MainApplication          : Started MainApplication in 5.441 seconds (process running for 5.995)
+2025-02-27T18:06:58.409+09:00  INFO 29844 --- [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2025-02-27T18:06:58.416+09:00  INFO 29844 --- [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2025-02-27T18:06:58.420+09:00  INFO 29844 --- [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-02-27T18:06:58.422+09:00  INFO 29844 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-02-27T18:06:58.591+09:00  INFO 29844 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-02-27T18:07:02.436+09:00  INFO 17164 --- [main] site.FitUp.main.MainApplication          : Starting MainApplication using Java 21.0.5 with PID 17164 (C:\Users\장준용\Documents\GitHub\FitUp-BE\build\classes\java\main started by 장준용 in C:\Users\장준용\Documents\GitHub\FitUp-BE)
+2025-02-27T18:07:02.438+09:00 DEBUG 17164 --- [main] site.FitUp.main.MainApplication          : Running with Spring Boot v3.4.3, Spring v6.2.3
+2025-02-27T18:07:02.439+09:00  INFO 17164 --- [main] site.FitUp.main.MainApplication          : No active profile set, falling back to 1 default profile: "default"
+2025-02-27T18:07:03.087+09:00  INFO 17164 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-02-27T18:07:03.159+09:00  INFO 17164 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 64 ms. Found 5 JPA repository interfaces.
+2025-02-27T18:07:03.645+09:00  INFO 17164 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-02-27T18:07:03.659+09:00  INFO 17164 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-02-27T18:07:03.659+09:00  INFO 17164 --- [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.36]
+2025-02-27T18:07:03.706+09:00  INFO 17164 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-02-27T18:07:03.706+09:00  INFO 17164 --- [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1218 ms
+2025-02-27T18:07:03.819+09:00  INFO 17164 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-02-27T18:07:04.525+09:00  INFO 17164 --- [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@191ec193
+2025-02-27T18:07:04.528+09:00  INFO 17164 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-02-27T18:07:04.585+09:00  INFO 17164 --- [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-02-27T18:07:04.637+09:00  INFO 17164 --- [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.8.Final
+2025-02-27T18:07:04.676+09:00  INFO 17164 --- [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-02-27T18:07:05.034+09:00  INFO 17164 --- [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-02-27T18:07:05.367+09:00  INFO 17164 --- [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 8.0.40
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-02-27T18:07:06.286+09:00  INFO 17164 --- [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-02-27T18:07:06.290+09:00  INFO 17164 --- [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-02-27T18:07:06.701+09:00  WARN 17164 --- [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-02-27T18:07:07.066+09:00  INFO 17164 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2025-02-27T18:07:07.072+09:00  INFO 17164 --- [main] site.FitUp.main.MainApplication          : Started MainApplication in 5.181 seconds (process running for 5.814)
+2025-02-27T18:07:28.435+09:00  INFO 17164 --- [http-nio-8080-exec-2] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-02-27T18:07:28.435+09:00  INFO 17164 --- [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-02-27T18:07:28.436+09:00  INFO 17164 --- [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2025-02-27T18:07:30.279+09:00  INFO 17164 --- [http-nio-8080-exec-2] s.F.m.api.stat.services.StatServiceImpl  : Response Body: {
+  "candidates": [
+    {
+      "content": {
+        "parts": [
+          {
+            "text": "```json\n{\n  \"user_id\": \"USER-8aa26034\",\n  \"chronic\": \"척추측만증\",\n  \"strength\": 92,\n  \"endurance\": 95,\n  \"speed\": 85,\n  \"flexibility\": 65,\n  \"stamina\": 73,\n  \"character_type\": \"power\"\n}\n```\n"
+          }
+        ],
+        "role": "model"
+      },
+      "finishReason": "STOP",
+      "avgLogprobs": -0.084713660564619236
+    }
+  ],
+  "usageMetadata": {
+    "promptTokenCount": 1290,
+    "candidatesTokenCount": 97,
+    "totalTokenCount": 1387,
+    "promptTokensDetails": [
+      {
+        "modality": "TEXT",
+        "tokenCount": 1290
+      }
+    ],
+    "candidatesTokensDetails": [
+      {
+        "modality": "TEXT",
+        "tokenCount": 97
+      }
+    ]
+  },
+  "modelVersion": "gemini-2.0-flash"
+}
+
+2025-02-27T18:07:30.281+09:00 ERROR 17164 --- [http-nio-8080-exec-2] s.F.m.api.stat.services.StatServiceImpl  : Error Response: java.lang.IllegalArgumentException: No enum constant site.FitUp.main.common.enums.CharacterType.power
+2025-02-27T18:09:27.622+09:00  INFO 17164 --- [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2025-02-27T18:09:27.630+09:00  INFO 17164 --- [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2025-02-27T18:09:27.633+09:00  INFO 17164 --- [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-02-27T18:09:27.634+09:00  INFO 17164 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-02-27T18:09:27.718+09:00  INFO 17164 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-02-27T18:09:31.237+09:00  INFO 17464 --- [main] site.FitUp.main.MainApplication          : Starting MainApplication using Java 21.0.5 with PID 17464 (C:\Users\장준용\Documents\GitHub\FitUp-BE\build\classes\java\main started by 장준용 in C:\Users\장준용\Documents\GitHub\FitUp-BE)
+2025-02-27T18:09:31.239+09:00 DEBUG 17464 --- [main] site.FitUp.main.MainApplication          : Running with Spring Boot v3.4.3, Spring v6.2.3
+2025-02-27T18:09:31.239+09:00  INFO 17464 --- [main] site.FitUp.main.MainApplication          : No active profile set, falling back to 1 default profile: "default"
+2025-02-27T18:09:31.858+09:00  INFO 17464 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-02-27T18:09:31.932+09:00  INFO 17464 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 67 ms. Found 5 JPA repository interfaces.
+2025-02-27T18:09:32.350+09:00  INFO 17464 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-02-27T18:09:32.363+09:00  INFO 17464 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-02-27T18:09:32.363+09:00  INFO 17464 --- [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.36]
+2025-02-27T18:09:32.412+09:00  INFO 17464 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-02-27T18:09:32.413+09:00  INFO 17464 --- [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1127 ms
+2025-02-27T18:09:32.512+09:00  INFO 17464 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-02-27T18:09:32.907+09:00  INFO 17464 --- [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@39449465
+2025-02-27T18:09:32.908+09:00  INFO 17464 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-02-27T18:09:32.964+09:00  INFO 17464 --- [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-02-27T18:09:33.007+09:00  INFO 17464 --- [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.8.Final
+2025-02-27T18:09:33.038+09:00  INFO 17464 --- [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-02-27T18:09:33.323+09:00  INFO 17464 --- [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-02-27T18:09:33.479+09:00  INFO 17464 --- [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 8.0.40
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-02-27T18:09:34.400+09:00  INFO 17464 --- [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-02-27T18:09:34.403+09:00  INFO 17464 --- [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-02-27T18:09:34.810+09:00  WARN 17464 --- [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-02-27T18:09:35.209+09:00  INFO 17464 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2025-02-27T18:09:35.217+09:00  INFO 17464 --- [main] site.FitUp.main.MainApplication          : Started MainApplication in 4.409 seconds (process running for 4.961)
+2025-02-27T18:09:39.126+09:00  INFO 17464 --- [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-02-27T18:09:39.127+09:00  INFO 17464 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-02-27T18:09:39.129+09:00  INFO 17464 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2025-02-27T18:09:40.657+09:00  INFO 17464 --- [http-nio-8080-exec-1] s.F.m.api.stat.services.StatServiceImpl  : Response Body: {
+  "candidates": [
+    {
+      "content": {
+        "parts": [
+          {
+            "text": "```json\n{\n  \"user_id\": \"USER-8aa26034\",\n  \"chronic\": \"척추측만증\",\n  \"strength\": 91,\n  \"endurance\": 90,\n  \"speed\": 82,\n  \"flexibility\": 65,\n  \"stamina\": 87,\n  \"character_type\": \"power\"\n}\n```"
+          }
+        ],
+        "role": "model"
+      },
+      "finishReason": "STOP",
+      "avgLogprobs": -0.089242011308670044
+    }
+  ],
+  "usageMetadata": {
+    "promptTokenCount": 1290,
+    "candidatesTokenCount": 96,
+    "totalTokenCount": 1386,
+    "promptTokensDetails": [
+      {
+        "modality": "TEXT",
+        "tokenCount": 1290
+      }
+    ],
+    "candidatesTokensDetails": [
+      {
+        "modality": "TEXT",
+        "tokenCount": 96
+      }
+    ]
+  },
+  "modelVersion": "gemini-2.0-flash"
+}
+
+2025-02-27T18:09:41.131+09:00  WARN 17464 --- [http-nio-8080-exec-1] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Error: 1054, SQLState: 42S22
+2025-02-27T18:09:41.131+09:00 ERROR 17464 --- [http-nio-8080-exec-1] o.h.engine.jdbc.spi.SqlExceptionHelper   : Unknown column 'height' in 'field list'
+2025-02-27T18:09:41.201+09:00 ERROR 17464 --- [http-nio-8080-exec-1] s.F.m.api.stat.services.StatServiceImpl  : Error Response: org.springframework.dao.InvalidDataAccessResourceUsageException: could not execute statement [Unknown column 'height' in 'field list'] [insert into user_stat (bench_press,created_at,dead_lift,fat,height,muscle_mass,push_ups,running_pace,running_time,sit_up,squat,updated_at,user_id,weight) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?)]; SQL [insert into user_stat (bench_press,created_at,dead_lift,fat,height,muscle_mass,push_ups,running_pace,running_time,sit_up,squat,updated_at,user_id,weight) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?)]
+2025-02-27T18:13:34.274+09:00  INFO 17464 --- [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2025-02-27T18:13:34.281+09:00  INFO 17464 --- [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2025-02-27T18:13:34.284+09:00  INFO 17464 --- [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-02-27T18:13:34.286+09:00  INFO 17464 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-02-27T18:13:34.384+09:00  INFO 17464 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.

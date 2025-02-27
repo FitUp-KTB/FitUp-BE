@@ -13,6 +13,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import site.FitUp.main.api.stat.dtos.StatRequest;
 import site.FitUp.main.api.stat.dtos.StatResponse;
+import site.FitUp.main.common.enums.CharacterType;
+import site.FitUp.main.model.User;
+import site.FitUp.main.model.UserStat;
+import site.FitUp.main.model.UserStatResult;
+import site.FitUp.main.repository.UserRepository;
+import site.FitUp.main.repository.UserStatRepository;
+import site.FitUp.main.repository.UserStatResultRepository;
 
 @Service
 @RequiredArgsConstructor
@@ -20,7 +27,9 @@ import site.FitUp.main.api.stat.dtos.StatResponse;
 public class StatServiceImpl implements StatService {
 
     private final RestTemplate restTemplate;
-
+    private final UserStatRepository statRepository;
+    private final UserRepository userRepository;
+    private final UserStatResultRepository userStatResultRepository;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
@@ -32,7 +41,7 @@ public class StatServiceImpl implements StatService {
         //DB에서 새로 값 가져올거 가져와야함(gender,height,weight)
         // JSON 형식으로 입력 데이터 설정
         JSONObject inputJson = new JSONObject()
-                .put("user_id", "12345")
+                .put("user_id", userId)
                 .put("gender", "male")
                 .put("chronic","척추측만증")
                 .put("height", 175)
@@ -49,14 +58,14 @@ public class StatServiceImpl implements StatService {
 
         // 시스템 명령어 설정
         String systemInstruction = getSystemInstruction();
-
-       HttpHeaders headers=new HttpHeaders();
-       headers.setContentType(MediaType.APPLICATION_JSON);
+        User user=userRepository.findById(userId).orElse(null);
+        HttpHeaders headers=new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
 
         // 요청 본문에 시스템 규칙과 사용자 입력 데이터 포함
         JSONObject body = new JSONObject();
         body.put("contents", new JSONObject().put("parts", new JSONObject().put("text", systemInstruction+"\n"+inputJson.toString())));
-//        body.put("user_input", inputJson);
+
         // HttpEntity에 요청 본문과 헤더 설정
         HttpEntity<String> entity = new HttpEntity<>(body.toString(), headers);
         try {
@@ -78,19 +87,47 @@ public class StatServiceImpl implements StatService {
 
                         String cleanedJson = text.replaceAll("```json\\n|```", "").trim();
                         JSONObject parsedJson = new JSONObject(cleanedJson);
-
-                        //스탯 저장해야하는 로직 들어갈 자리
-
-
+                        int strength=parsedJson.getInt("strength");
+                        int endurance=parsedJson.getInt("endurance");
+                        int speed=parsedJson.getInt("speed");
+                        int flexibility=parsedJson.getInt("flexibility");
+                        int stamina=parsedJson.getInt("stamina");
+                        String charcterType= parsedJson.getString("character_type");
+                        //요청 값 저장
+                        UserStat userStat= UserStat.builder()
+                                .user(user)
+                                .fat(request.getBodyFat())
+                                .height(request.getHeight())
+                                .weight(request.getWeight())
+                                .muscleMass(request.getMuscleMass())
+                                .pushUps(request.getPushUps())
+                                .sitUp(request.getSitUps())
+                                .runningPace(request.getRunningPace())
+                                .runningTime(request.getRunningTime())
+                                .squat(request.getSquat())
+                                .benchPress(request.getBenchPress())
+                                .deadLift(request.getDeadLift()).build();
+                        UserStat newUserStat=statRepository.save(userStat);
+                        //응답 값 저장
+                        UserStatResult userStatResult=UserStatResult.builder()
+                                .userStatSeq(newUserStat.getUserStatSeq())
+                                .userStat(newUserStat)
+                                .strength(strength)
+                                .endurance(endurance)
+                                .speed(speed)
+                                .flexibility(flexibility)
+                                .stamina(stamina)
+                                .characterType(CharacterType.valueOf(charcterType)).build();
+                        userStatResultRepository.save(userStatResult);
 
                         return StatResponse.CreateStatResponse.builder()
-                                .userStatSeq(123)
-                                .strength(parsedJson.getInt("strength"))
-                                .endurance(parsedJson.getInt("endurance"))
-                                .speed(parsedJson.getInt("speed"))
-                                .flexibility(parsedJson.getInt("flexibility"))
-                                .stamina(parsedJson.getInt("stamina"))
-                                .characterType(parsedJson.getString("character_type")).build();
+                                .userStatSeq(userStatResult.getUserStatSeq())
+                                .strength(strength)
+                                .endurance(endurance)
+                                .speed(speed)
+                                .flexibility(flexibility)
+                                .stamina(stamina)
+                                .characterType(userStatResult.getCharacterType().toString()).build();
                     }
 
 
