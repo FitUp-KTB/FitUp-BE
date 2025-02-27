@@ -25,6 +25,7 @@ public class QuestRequest {
     public static class RequestQuestDto {
         private String questId;
         private String content;
+        private int exp;
         private boolean isSuccess;
     }
     @Builder

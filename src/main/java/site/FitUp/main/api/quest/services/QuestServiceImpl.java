@@ -14,10 +14,8 @@ import org.springframework.web.client.RestTemplate;
 import site.FitUp.main.api.quest.dtos.QuestRequest;
 import site.FitUp.main.api.quest.dtos.QuestResponse;
 import site.FitUp.main.common.enums.QuestStatus;
-import site.FitUp.main.model.DailyResult;
-import site.FitUp.main.model.User;
-import site.FitUp.main.model.UserStat;
-import site.FitUp.main.model.UserStatResult;
+import site.FitUp.main.common.enums.QuestType;
+import site.FitUp.main.model.*;
 import site.FitUp.main.repository.*;
 
 import java.util.ArrayList;
@@ -173,7 +171,38 @@ public class QuestServiceImpl implements QuestService{
         DailyResult newDailyResult=dailyResultRepository.save(dailyResult);
 
         //피트니스 퀘스트
-        return null;
+        for(QuestRequest.RequestQuestDto fitness:request.getDailyQuest().getFitness()){
+            Quest quest=Quest.builder()
+                    .questId(fitness.getQuestId())
+                    .content(fitness.getContent())
+                    .dailyResult(newDailyResult)
+                    .isSuccess(false)
+                    .type(QuestType.FITNESS)
+                    .point(fitness.getExp()).build();
+            questRepository.save(quest);
+        }
+        //잠 퀘스트
+        Quest sleepQuest=Quest.builder()
+                .questId(request.getDailyQuest().getSleep().getQuestId())
+                .content(request.getDailyQuest().getSleep().getContent())
+                .point(request.getDailyQuest().getSleep().getExp())
+                .type(QuestType.SLEEP)
+                .isSuccess(false)
+                .dailyResult(newDailyResult).build();
+        questRepository.save(sleepQuest);
+        //생활 패턴 퀘스트
+        Quest dailyQeust=Quest.builder()
+                .questId(request.getDailyQuest().getDaily().getQuestId())
+                .content(request.getDailyQuest().getDaily().getContent())
+                .point(request.getDailyQuest().getDaily().getExp())
+                .type(QuestType.DAILY)
+                .isSuccess(false)
+                .dailyResult(newDailyResult).build();
+        questRepository.save(dailyQeust);
+
+        return QuestResponse.AcceptQuestsResponse.builder()
+                .dailyResultSeq(newDailyResult.getDailyResultSeq())
+                .dailyQuest(request.getDailyQuest()).build();
 
     }
     public String getSystemInstruction(){

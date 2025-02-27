@@ -21,7 +21,7 @@ public class Quest extends BaseTime{
     @Column(nullable = false)
     private QuestType type;
 
-    private Boolean isSucess;
+    private Boolean isSuccess;
 
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;

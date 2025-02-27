@@ -28,8 +28,8 @@ public class QuestResponse {
     @Builder
     @Getter
     public static class AcceptQuestsResponse {
-        private int dailyResultSeq;
-        private DailyQuest dailyQuest;
+        private long dailyResultSeq;
+        private QuestRequest.RequestDailyQuest dailyQuest;
     }
     @Builder
     @Getter

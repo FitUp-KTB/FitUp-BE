@@ -22,6 +22,7 @@ import site.FitUp.main.repository.UserRepository;
 import site.FitUp.main.repository.UserStatRepository;
 import site.FitUp.main.repository.UserStatResultRepository;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -151,6 +152,7 @@ public class StatServiceImpl implements StatService {
     public StatResponse.GetStatsResponse GetStatsService(String userId){
         User user=userRepository.findById(userId).orElse(null);
         List<UserStat> userStats=statRepository.findAllByUserOrderByCreatedAtDesc(user);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         List<StatResponse.GetStatResponse> getStatResponses=userStats.stream().map(userStat -> {
             UserStatResult userStatResult=userStatResultRepository.findByUserStat(userStat);
             return StatResponse.GetStatResponse.builder()
@@ -161,7 +163,7 @@ public class StatServiceImpl implements StatService {
                     .flexibility(userStatResult.getFlexibility())
                     .stamina(userStatResult.getStamina())
                     .characterType(userStatResult.getCharacterType().toString())
-                    .createdAt(String.valueOf(userStat.getCreatedAt())).build();
+                    .createdAt(userStat.getCreatedAt().toLocalDate().format(formatter)).build();
 
         }).toList();
         return StatResponse.GetStatsResponse.builder()
