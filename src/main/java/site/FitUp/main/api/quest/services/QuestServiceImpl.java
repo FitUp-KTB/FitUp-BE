@@ -220,6 +220,11 @@ public class QuestServiceImpl implements QuestService{
         }).toList();
         return QuestResponse.GetQuestsResponse.builder().quests(questsRecords).build();
     }
+
+    public QuestResponse.GetQuestResponse getQuestService(String userId,long dailyResultSeq){
+        DailyResult dailyResult=dailyResultRepository.findById(dailyResultSeq).orElse(null);
+        return null;
+    }
     public String getSystemInstruction(){
         return  """
                     너는 사람들의 운동을 돕는 게임 기반의 퀘스트 생성 시스템이야

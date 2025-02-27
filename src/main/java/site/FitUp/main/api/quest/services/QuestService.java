@@ -8,4 +8,6 @@ public interface QuestService {
     QuestResponse.AcceptQuestsResponse acceptQuestService(QuestRequest.AcceptQuestRequest request, String userId);
 
     QuestResponse.GetQuestsResponse getQuestsService(String userId);
+
+    QuestResponse.GetQuestResponse getQuestService(String userId,long dailyResultSeq);
 }
