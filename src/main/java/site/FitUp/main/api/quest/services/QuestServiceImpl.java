@@ -264,7 +264,9 @@ public class QuestServiceImpl implements QuestService{
         if(!quest.getIsSuccess()) {
             quest.setIsSuccess(true);
             int currentCount = dailyResult.getQuestSuccessCount();
+            int currentExp=dailyResult.getPointSum();
             dailyResult.setQuestSuccessCount(currentCount + 1);
+            dailyResult.setPointSum(currentExp+quest.getPoint());
             //만약 운동 퀘스트가 하나도 완료되지 않는 상태에서 운동퀘스트가 완료됬으면 Success로 변경
             if (dailyResult.getQuestStatus().equals(QuestStatus.FAIL) && quest.getType().equals(QuestType.FITNESS)) {
                 dailyResult.setQuestStatus(QuestStatus.SUCCESS);
