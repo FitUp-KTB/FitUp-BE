@@ -34,7 +34,7 @@ public class QuestResponse {
     @Builder
     @Getter
     public static class QuestsRecord{
-        private int dailyResultSeq;
+        private long dailyResultSeq;
         private String questStatus;
         private int questSuccessCount;
         private String createdAt;

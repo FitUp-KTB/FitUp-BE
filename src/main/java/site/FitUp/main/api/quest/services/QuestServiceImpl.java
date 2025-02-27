@@ -18,6 +18,7 @@ import site.FitUp.main.common.enums.QuestType;
 import site.FitUp.main.model.*;
 import site.FitUp.main.repository.*;
 
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -204,6 +205,20 @@ public class QuestServiceImpl implements QuestService{
                 .dailyResultSeq(newDailyResult.getDailyResultSeq())
                 .dailyQuest(request.getDailyQuest()).build();
 
+    }
+    public QuestResponse.GetQuestsResponse getQuestsService(String userId){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        User user=userRepository.findById(userId).orElse(null);
+        List<DailyResult> dailyResults=dailyResultRepository.findAllByUserOrderByCreatedAtDesc(user);
+        List<QuestResponse.QuestsRecord> questsRecords=dailyResults.stream().map(dailyResult -> {
+            return QuestResponse.QuestsRecord.builder()
+                    .dailyResultSeq(dailyResult.getDailyResultSeq())
+                    .questStatus(dailyResult.getQuestStatus().toString())
+                    .questSuccessCount(dailyResult.getQuestSuccessCount())
+                    .createdAt(dailyResult.getCreatedAt().toLocalDate().format(formatter)).build();
+
+        }).toList();
+        return QuestResponse.GetQuestsResponse.builder().quests(questsRecords).build();
     }
     public String getSystemInstruction(){
         return  """

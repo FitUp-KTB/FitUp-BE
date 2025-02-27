@@ -50,17 +50,19 @@ public class QuestController {
     }
     @GetMapping("")
     public ApiResponse<QuestResponse.GetQuestsResponse>GetQuestsController(@RequestHeader("Authorization") String token){
-        List<QuestResponse.QuestsRecord> quests=new ArrayList<>();
-        int count =2;
-        for(int i=0;i<3;i++){
-            quests.add(QuestResponse.QuestsRecord.builder()
-                    .dailyResultSeq(count)
-                    .questStatus(QuestStatus.SUCCESS.toString())
-                    .questSuccessCount(1)
-                    .createdAt("2022-02-24").build());
-            count++;
-        }
-        return new ApiResponse<>(QuestResponse.GetQuestsResponse.builder().quests(quests).build());
+        String userId= JwtUtil.extractUserId(token);
+//        List<QuestResponse.QuestsRecord> quests=new ArrayList<>();
+//        int count =2;
+//        for(int i=0;i<3;i++){
+//            quests.add(QuestResponse.QuestsRecord.builder()
+//                    .dailyResultSeq(count)
+//                    .questStatus(QuestStatus.SUCCESS.toString())
+//                    .questSuccessCount(1)
+//                    .createdAt("2022-02-24").build());
+//            count++;
+//        }
+//        return new ApiResponse<>(QuestResponse.GetQuestsResponse.builder().quests(quests).build());
+        return new ApiResponse<>(questService.getQuestsService(userId));
     }
     @GetMapping("/{dailyResultSeq}")
     public ApiResponse<QuestResponse.GetQuestResponse>GetQuestController(@RequestHeader("Authorization") String token, @PathVariable(value = "dailyResultSeq", required = true) int dailyResultSeq){
