@@ -71,7 +71,7 @@ public class StatServiceImpl implements StatService {
         try {
             // API 호출 (새로운 URL 적용)
             ResponseEntity<String> response = restTemplate.exchange(
-                    "https://musical-barnacle-6ww76ggw69vfx4vq-8000.app.github.dev/stats",
+                    API_URL+"/stats",
                     HttpMethod.POST,
                     entity,
                     String.class

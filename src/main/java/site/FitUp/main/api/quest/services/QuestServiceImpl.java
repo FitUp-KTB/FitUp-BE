@@ -72,7 +72,8 @@ public class QuestServiceImpl implements QuestService{
         try {
             // **새로운 API URL로 요청**
             ResponseEntity<String> response = restTemplate.exchange(
-                    "https://musical-barnacle-6ww76ggw69vfx4vq-8000.app.github.dev/query", // 변경할 API URL
+
+                    API_URL+"/query", // 변경할 API URL
                     HttpMethod.POST,
                     entity,
                     String.class
