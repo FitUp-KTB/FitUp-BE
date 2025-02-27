@@ -14,6 +14,8 @@ public interface DailyResultRepository extends JpaRepository<DailyResult,Long> {
     @Query("SELECT d FROM DailyResult d WHERE FUNCTION('MONTH', d.createdAt) = :month")
     List<DailyResult> findAllByCreatedAtMonth(@Param("month") int month);
 
-    @Query("SELECT SUM(d.pointSum) FROM DailyResult d WHERE FUNCTION('MONTH', d.createdAt) = :month")
-    int sumPointSumByMonth(@Param("month") int month);
+    @Query("SELECT SUM(d.pointSum) FROM DailyResult d WHERE FUNCTION('MONTH', d.createdAt) = :month AND d.user = :user")
+    Integer sumPointSumByMonthAndUser(@Param("month") int month, @Param("user") User user);
+
+
 }

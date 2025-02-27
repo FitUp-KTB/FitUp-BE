@@ -24,6 +24,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -296,8 +297,9 @@ public class QuestServiceImpl implements QuestService{
         LocalDate now = LocalDate.now(ZoneId.of("Asia/Seoul"));
         int month=now.getMonthValue();
         int previousMonth = (month + 10) % 12 + 1;
-        int nowMonthExp=dailyResultRepository.sumPointSumByMonth(month);
-        int previousMonthExp= dailyResultRepository.sumPointSumByMonth(previousMonth);
+        int nowMonthExp= Optional.ofNullable(dailyResultRepository.sumPointSumByMonthAndUser(month, user)).orElse(0);
+
+        int previousMonthExp= Optional.ofNullable(dailyResultRepository.sumPointSumByMonthAndUser(previousMonth, user)).orElse(0);
         return QuestResponse.GetQuestTierResponse.builder()
                 .currentExp(nowMonthExp)
                 .previousExp(previousMonthExp)
