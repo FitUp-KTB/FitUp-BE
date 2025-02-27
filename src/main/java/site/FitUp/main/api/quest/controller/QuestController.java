@@ -100,5 +100,13 @@ public class QuestController {
                 .build());
     }
 
+    @GetMapping("/tier")
+    public ApiResponse<QuestResponse.GetQuestTierResponse>GetQuestsTierController(@RequestHeader("Authorization")String token){
+
+        return new ApiResponse<>(QuestResponse.GetQuestTierResponse.builder()
+                .previousTier(200)
+                .nowTier(400).build());
+    }
+
 
 }

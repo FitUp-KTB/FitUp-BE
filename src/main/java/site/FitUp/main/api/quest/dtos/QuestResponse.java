@@ -65,4 +65,10 @@ public class QuestResponse {
         private String questStatus;
         private String updatedAt;
     }
+    @Builder
+    @Getter
+    public static class GetQuestTierResponse{
+        private int previousTier;
+        private int nowTier;
+    }
 }
