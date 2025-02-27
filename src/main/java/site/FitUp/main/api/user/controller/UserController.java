@@ -30,15 +30,10 @@ public class UserController {
         return new ApiResponse(userId);
     }
     @PostMapping("/token")
-    public ApiResponse<UserResponse.LoginUserResponse> LoginUserController(){
-        String userId="USERf029w9";
-        String accessToken= JwtUtil.generateToken(userId);
-        String refreshToken=JwtUtil.generateToken(userId);
+    public ApiResponse<UserResponse.LoginUserResponse> LoginUserController(@RequestBody UserRequest.LoginUserRequest request) throws IllegalAccessException {
 
-        return new ApiResponse<>(UserResponse.LoginUserResponse.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
-                .build());
+
+        return new ApiResponse<>(userService.LoginUserService(request));
     }
     @PostMapping("/target")
     public ApiResponse<UserResponse.EditTargetResponse> EditTargetController(@RequestBody UserRequest.EditUserRequest request){

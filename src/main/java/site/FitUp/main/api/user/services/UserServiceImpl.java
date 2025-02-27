@@ -41,6 +41,18 @@ public class UserServiceImpl implements UserService {
                 .accessToken(JwtUtil.generateToken(newUserId))
                 .refreshToken(JwtUtil.generateToken(newUserId)).build();
     }
+
+    @Override
+    public UserResponse.LoginUserResponse LoginUserService(UserRequest.LoginUserRequest request) throws IllegalAccessException {
+        User user=userRepository.findByEmail(request.getEmail());
+        if(!user.getPassword().equals(request.getPassword())){
+            throw new IllegalAccessException();
+        }else{
+            return UserResponse.LoginUserResponse.builder()
+                    .accessToken(JwtUtil.generateToken(user.getUserId()))
+                    .refreshToken(JwtUtil.generateToken(user.getUserId())).build();
+        }
+    }
     private String generateUserId() {
         return "USER-" + UUID.randomUUID().toString().replaceAll("-", "").substring(0, 8); // 8자리 랜덤 ID
     }

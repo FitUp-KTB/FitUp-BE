@@ -6,4 +6,6 @@ import site.FitUp.main.api.user.dtos.UserResponse;
 public interface UserService {
     UserResponse.CreateUserResponse CreateUserService(UserRequest.CreateUserRequest request);
 
+    UserResponse.LoginUserResponse LoginUserService(UserRequest.LoginUserRequest request) throws IllegalAccessException;
+
 }

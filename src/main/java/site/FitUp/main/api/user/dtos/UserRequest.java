@@ -25,5 +25,10 @@ public class UserRequest {
     public static class EditUserRequest{
         private String content;
     }
-
+    @Getter
+    @Setter
+    public static class LoginUserRequest{
+        private String email;
+        private String password;
+    }
 }
