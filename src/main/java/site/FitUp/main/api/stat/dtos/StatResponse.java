@@ -27,7 +27,7 @@ public class StatResponse {
     @Builder
     @Getter
     public static class GetStatResponse{
-        private int userStatSeq;
+        private long userStatSeq;
         private int strength;
         private int endurance;
         private int speed;

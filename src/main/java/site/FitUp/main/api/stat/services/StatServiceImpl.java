@@ -1,5 +1,6 @@
 package site.FitUp.main.api.stat.services;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
@@ -20,6 +21,8 @@ import site.FitUp.main.model.UserStatResult;
 import site.FitUp.main.repository.UserRepository;
 import site.FitUp.main.repository.UserStatRepository;
 import site.FitUp.main.repository.UserStatResultRepository;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -108,9 +111,10 @@ public class StatServiceImpl implements StatService {
                                 .benchPress(request.getBenchPress())
                                 .deadLift(request.getDeadLift()).build();
                         UserStat newUserStat=statRepository.save(userStat);
+                        log.info(String.valueOf(newUserStat.getUserStatSeq()));
+                        statRepository.flush();
                         //응답 값 저장
                         UserStatResult userStatResult=UserStatResult.builder()
-                                .userStatSeq(newUserStat.getUserStatSeq())
                                 .userStat(newUserStat)
                                 .strength(strength)
                                 .endurance(endurance)
@@ -118,10 +122,10 @@ public class StatServiceImpl implements StatService {
                                 .flexibility(flexibility)
                                 .stamina(stamina)
                                 .characterType(CharacterType.valueOf(charcterType)).build();
-                        userStatResultRepository.save(userStatResult);
 
+                        UserStatResult newUserStatResult = userStatResultRepository.save(userStatResult);
                         return StatResponse.CreateStatResponse.builder()
-                                .userStatSeq(userStatResult.getUserStatSeq())
+                                .userStatSeq(newUserStat.getUserStatSeq())
                                 .strength(strength)
                                 .endurance(endurance)
                                 .speed(speed)
@@ -144,7 +148,25 @@ public class StatServiceImpl implements StatService {
 
         return null;
     }
+    public StatResponse.GetStatsResponse GetStatsService(String userId){
+        User user=userRepository.findById(userId).orElse(null);
+        List<UserStat> userStats=statRepository.findAllByUserOrderByCreatedAtDesc(user);
+        List<StatResponse.GetStatResponse> getStatResponses=userStats.stream().map(userStat -> {
+            UserStatResult userStatResult=userStatResultRepository.findByUserStat(userStat);
+            return StatResponse.GetStatResponse.builder()
+                    .userStatSeq(userStat.getUserStatSeq())
+                    .strength(userStatResult.getStrength())
+                    .endurance(userStatResult.getEndurance())
+                    .speed(userStatResult.getSpeed())
+                    .flexibility(userStatResult.getFlexibility())
+                    .stamina(userStatResult.getStamina())
+                    .characterType(userStatResult.getCharacterType().toString())
+                    .createdAt(String.valueOf(userStat.getCreatedAt())).build();
 
+        }).toList();
+        return StatResponse.GetStatsResponse.builder()
+                .stats(getStatResponses).build();
+    }
 
 
     // 시스템 명령어
@@ -240,4 +262,7 @@ public class StatServiceImpl implements StatService {
                                                        모든 출력은 설명 및 상세 분석이 없이 단순 JSON만 반환해줘
                 """;
     }
+
+
+
 }

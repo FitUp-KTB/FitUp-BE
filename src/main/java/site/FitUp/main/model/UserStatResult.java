@@ -14,11 +14,11 @@ import site.FitUp.main.common.enums.CharacterType;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserStatResult {
+public class UserStatResult extends BaseTime{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_stat_seq")
-    private Long userStatSeq;
+    @Column(name = "user_stat_result_seq")
+    private Long userStatResultSeq;
 
     @Column(nullable = false)
     private Integer strength;
@@ -38,7 +38,6 @@ public class UserStatResult {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private CharacterType characterType;
-
 
     @OneToOne
     @JoinColumn(name = "user_stat_seq", referencedColumnName = "user_stat_seq", nullable = false)

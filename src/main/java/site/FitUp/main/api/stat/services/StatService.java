@@ -5,4 +5,5 @@ import site.FitUp.main.api.stat.dtos.StatResponse;
 
 public interface StatService {
     StatResponse.CreateStatResponse CreateStatService(StatRequest.CreateStatRequest request,String userId) throws Exception;
+    StatResponse.GetStatsResponse GetStatsService(String userId);
 }
