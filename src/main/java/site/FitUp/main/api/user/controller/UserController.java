@@ -24,10 +24,10 @@ public class UserController {
         return new ApiResponse<>(userService.CreateUserService(request));
     }
     @GetMapping("")
-    public ApiResponse GetUserController(@RequestHeader("Authorization") String token) {
+    public ApiResponse <UserResponse.GetUserResponse>GetUserController(@RequestHeader("Authorization") String token) {
 
         String userId = JwtUtil.extractUserId(token);
-        return new ApiResponse(userId);
+        return new ApiResponse<>(userService.GetUserResponse(userId));
     }
     @PostMapping("/token")
     public ApiResponse<UserResponse.LoginUserResponse> LoginUserController(@RequestBody UserRequest.LoginUserRequest request) throws IllegalAccessException {
@@ -40,4 +40,5 @@ public class UserController {
         String userId = JwtUtil.extractUserId(token);
         return new ApiResponse<>(userService.EditTargetService(request,userId));
     }
+
 }

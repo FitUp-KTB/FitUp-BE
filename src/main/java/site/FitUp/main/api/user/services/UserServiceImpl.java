@@ -61,7 +61,15 @@ public class UserServiceImpl implements UserService {
         return UserResponse.EditTargetResponse.builder().content(request.getContent()).build();
     }
 
-
+    public UserResponse.GetUserResponse GetUserResponse(String userId){
+        User user= userRepository.findById(userId).orElse(null);
+        return UserResponse.GetUserResponse
+                .builder()
+                .email(user.getEmail())
+                .nickName(user.getNickname())
+                .name(user.getName())
+                .build();
+    }
     ///
     private String generateUserId() {
         return "USER-" + UUID.randomUUID().toString().replaceAll("-", "").substring(0, 8); // 8자리 랜덤 ID

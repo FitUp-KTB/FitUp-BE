@@ -10,5 +10,6 @@ public interface UserService {
 
     UserResponse.EditTargetResponse EditTargetService(UserRequest.EditUserRequest request,String userId);
 
+    UserResponse.GetUserResponse GetUserResponse(String userId);
 
 }

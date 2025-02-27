@@ -24,5 +24,12 @@ public class UserResponse {
     public static class EditTargetResponse{
         private String content;
     }
+    @Builder
+    @Getter
+    public static class GetUserResponse{
+        private String email;
+        private String name;
+        private String nickName;
+    }
 
 }
