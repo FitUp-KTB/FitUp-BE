@@ -12,6 +12,9 @@ import site.FitUp.main.model.User;
 import site.FitUp.main.repository.UserRepository;
 import site.FitUp.main.util.JwtUtil;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -29,7 +32,7 @@ public class UserServiceImpl implements UserService {
                 .email(request.getEmail())
                 .name(request.getName())
                 .nickname(request.getNickname())
-                .password(request.getPassword())
+                .password(hashPassword(request.getPassword()))
                 .gender(request.getGender())
                 .birthDate(request.getBirthDate())
                 .chronic(request.getChronic())
@@ -45,8 +48,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponse.LoginUserResponse LoginUserService(UserRequest.LoginUserRequest request) throws IllegalAccessException {
+
         User user=userRepository.findByEmail(request.getEmail());
-        if(!user.getPassword().equals(request.getPassword())){
+        if(!user.getPassword().equals(hashPassword(request.getPassword()))){
             throw new IllegalAccessException();
         }else{
             return UserResponse.LoginUserResponse.builder()
@@ -73,6 +77,16 @@ public class UserServiceImpl implements UserService {
     ///
     private String generateUserId() {
         return "USER-" + UUID.randomUUID().toString().replaceAll("-", "").substring(0, 8); // 8자리 랜덤 ID
+    }
+
+    private static String hashPassword(String password){
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            byte[] hashedBytes = md.digest(password.getBytes());
+            return Base64.getEncoder().encodeToString(hashedBytes);
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("Error hashing password", e);
+        }
     }
 
 }
