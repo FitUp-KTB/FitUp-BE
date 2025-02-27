@@ -14,7 +14,7 @@ services:
       SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
       GEMINI_API_KEY: ${GEMINI_API_KEY}
     networks:
-      - my-network
+      - fitup-network
   
 networks:
   my-network:
