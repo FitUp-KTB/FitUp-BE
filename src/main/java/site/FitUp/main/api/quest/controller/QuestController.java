@@ -95,10 +95,8 @@ public class QuestController {
 
     @GetMapping("/tier")
     public ApiResponse<QuestResponse.GetQuestTierResponse>GetQuestsTierController(@RequestHeader("Authorization")String token){
-
-        return new ApiResponse<>(QuestResponse.GetQuestTierResponse.builder()
-                .previousExp(200)
-                .currentExp(400).build());
+        String userId= JwtUtil.extractUserId(token);
+        return new ApiResponse<>(questService.getQuestTierService(userId));
     }
     @PostMapping("/accept")
     public ApiResponse<QuestResponse.AcceptQuestsResponse>AcceptQuestsController(@RequestBody QuestRequest.AcceptQuestRequest request,@RequestHeader("Authorization")String token){

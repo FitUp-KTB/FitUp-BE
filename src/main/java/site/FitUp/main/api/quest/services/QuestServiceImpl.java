@@ -18,6 +18,8 @@ import site.FitUp.main.common.enums.QuestType;
 import site.FitUp.main.model.*;
 import site.FitUp.main.repository.*;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -279,6 +281,21 @@ public class QuestServiceImpl implements QuestService{
                 .questSuccessCount(dailyResult.getQuestSuccessCount())
                 .updatedAt(dailyResult.getUpdatedAt().toLocalDate().format(formatter))
                 .build();
+    }
+
+    public QuestResponse.GetQuestTierResponse getQuestTierService(String userId){
+        User user= userRepository.findById(userId).orElse(null);
+        LocalDate now = LocalDate.now(ZoneId.of("Asia/Seoul"));
+        int month=now.getMonthValue();
+        int previousMonth = (month + 10) % 12 + 1;
+        int nowMonthExp=dailyResultRepository.sumPointSumByMonth(month);
+        int previousMonthExp= dailyResultRepository.sumPointSumByMonth(previousMonth);
+        return QuestResponse.GetQuestTierResponse.builder()
+                .currentExp(nowMonthExp)
+                .previousExp(previousMonthExp)
+                .build();
+
+
     }
     public String getSystemInstruction(){
         return  """

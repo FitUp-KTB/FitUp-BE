@@ -1,6 +1,8 @@
 package site.FitUp.main.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import site.FitUp.main.api.quest.dtos.QuestResponse;
 import site.FitUp.main.common.enums.QuestType;
 import site.FitUp.main.model.DailyResult;
@@ -12,4 +14,6 @@ public interface QuestRepository extends JpaRepository<Quest,String> {
 
     List<Quest> findAllByDailyResultAndType(DailyResult dailyResult, QuestType type);
     Quest findByDailyResultAndQuestId(DailyResult dailyResult,String questId);
+
+
 }
