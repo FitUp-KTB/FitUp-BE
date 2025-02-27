@@ -43,7 +43,16 @@ public class QuestServiceImpl implements QuestService{
     public QuestResponse.CreateQuestsResponse createQuestsService(QuestRequest.CreateQuestsRequest request, String userId){
         User user= userRepository.findById(userId).orElse(null);
         UserStat userStat=userStatRepository.findTopByUserOrderByCreatedAtDesc(user);
-        UserStatResult userStatResult=userStatResultRepository.findByUserStat(userStat);
+        if(userStat==null){
+            userStat=UserStat.builder()
+                    .pushUps(0)
+                    .sitUp(0)
+                    .runningPace(0.0)
+                    .runningTime(0)
+                    .squat(0)
+                    .benchPress(0)
+                    .deadLift(0).build();
+        }
         log.info("Request Body : "+request.getMainCategory());
         JSONObject stats = new JSONObject()
                 .put("pushups", userStat.getPushUps())
