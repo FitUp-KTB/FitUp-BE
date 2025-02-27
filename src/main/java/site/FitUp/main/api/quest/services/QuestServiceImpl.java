@@ -112,6 +112,7 @@ public class QuestServiceImpl implements QuestService{
                             QuestResponse.QuestDto questDto = QuestResponse.QuestDto.builder()
                                     .questId(newQuestId) // UUID 기반 QuestId 생성
                                     .content(questObj.getString("contents"))
+                                    .exp(50)
                                     .isSuccess(false)
                                     .build();
                             fitnessQuestDtos.add(questDto);
@@ -121,6 +122,7 @@ public class QuestServiceImpl implements QuestService{
                         QuestResponse.QuestDto sleepQuestDto = QuestResponse.QuestDto.builder()
                                 .questId(generateQuestId()) // UUID 기반 QuestId 생성
                                 .content(dailyQuestsJson.getJSONObject("sleep").getString("contents"))
+                                .exp(50)
                                 .isSuccess(false)
                                 .build();
 
@@ -128,6 +130,7 @@ public class QuestServiceImpl implements QuestService{
                         QuestResponse.QuestDto dailyQuestDto = QuestResponse.QuestDto.builder()
                                 .questId(generateQuestId()) // UUID 기반 QuestId 생성
                                 .content(dailyQuestsJson.getJSONObject("daily").getString("contents"))
+                                .exp(50)
                                 .isSuccess(false)
                                 .build();
 
@@ -223,7 +226,32 @@ public class QuestServiceImpl implements QuestService{
 
     public QuestResponse.GetQuestResponse getQuestService(String userId,long dailyResultSeq){
         DailyResult dailyResult=dailyResultRepository.findById(dailyResultSeq).orElse(null);
-        return null;
+        List<Quest> fitnessList=questRepository.findAllByDailyResultAndType(dailyResult,QuestType.FITNESS);
+        Quest sleep=questRepository.findAllByDailyResultAndType(dailyResult,QuestType.SLEEP).get(0);
+        Quest daily=questRepository.findAllByDailyResultAndType(dailyResult,QuestType.DAILY).get(0);
+        List<QuestResponse.QuestRecord> fitnessResponse=fitnessList.stream().map(fitness->{
+            return QuestResponse.QuestRecord.builder()
+                    .questId(fitness.getQuestId())
+                    .content(fitness.getContent())
+                    .exp(fitness.getPoint())
+                    .isSuccess(fitness.getIsSuccess()).build();
+        }).toList();
+        QuestResponse.QuestRecord sleepResponse=QuestResponse.QuestRecord.builder()
+                .questId(sleep.getQuestId())
+                .content(sleep.getContent())
+                .exp(sleep.getPoint())
+                .isSuccess(sleep.getIsSuccess())
+                .build();
+        QuestResponse.QuestRecord dailyResponse=QuestResponse.QuestRecord.builder()
+                .questId(daily.getQuestId())
+                .content(daily.getContent())
+                .exp(daily.getPoint())
+                .isSuccess(daily.getIsSuccess())
+                .build();
+        return QuestResponse.GetQuestResponse.builder()
+                .fitness(fitnessResponse)
+                .sleep(sleepResponse)
+                .daily(dailyResponse).build();
     }
     public String getSystemInstruction(){
         return  """

@@ -11,6 +11,7 @@ public class QuestResponse {
     public static class QuestDto {
         private String questId;
         private String content;
+        private int exp;
         private boolean isSuccess;
     }
     @Builder
@@ -49,7 +50,7 @@ public class QuestResponse {
     public static class QuestRecord{
         private String questId;
         private String content;
-
+        private int exp;
         private boolean isSuccess;
     }
     @Builder

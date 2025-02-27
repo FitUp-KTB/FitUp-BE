@@ -84,7 +84,8 @@ public class QuestController {
                 .sleep(sleep)
                 .daily(daily)
                 .build();
-        return new ApiResponse<>(quests);
+//        return new ApiResponse<>(quests);
+        return new ApiResponse<>(questService.getQuestService(userId,dailyResultSeq));
     }
     @PostMapping("/{dailyResultSeq}/{questId}")
     public ApiResponse<QuestResponse.DoQuestResponse>DoQuestController(@RequestHeader("Authorization") String token, @PathVariable(value = "dailyResultSeq", required = true) int dailyResultSeq,@PathVariable(value = "questId", required = true) String questId){
