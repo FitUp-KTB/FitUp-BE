@@ -33,7 +33,7 @@ public class UserController {
         return new ApiResponse(userId);
     }
     @PostMapping("/token")
-    public ApiResponse<UserResponse.LoginUserResponse> LoginUserController(@RequestHeader("Authorization") String token){
+    public ApiResponse<UserResponse.LoginUserResponse> LoginUserController(){
         String userId="USERf029w9";
         String accessToken= JwtUtil.generateToken(userId);
         String refreshToken=JwtUtil.generateToken(userId);
