@@ -11,6 +11,7 @@ public class QuestResponse {
     public static class Quest{
         private String questId;
         private String content;
+        private boolean isSuccess;
     }
     @Builder
     @Getter

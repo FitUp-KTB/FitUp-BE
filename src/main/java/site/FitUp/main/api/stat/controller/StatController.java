@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import site.FitUp.main.api.stat.dtos.StatRequest;
 import site.FitUp.main.api.stat.dtos.StatResponse;
+import site.FitUp.main.api.stat.services.StatService;
 import site.FitUp.main.common.ApiResponse;
 import site.FitUp.main.common.enums.CharacterType;
 
@@ -14,9 +15,10 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/stats")
 public class StatController {
+    private final StatService statService;
     @PostMapping("")
-    public ApiResponse<StatResponse.CreateStatResponse> CreateStatController(@RequestBody StatRequest.CreateStatRequest reqeust,@RequestHeader("Authorization") String token){
-
+    public ApiResponse<StatResponse.CreateStatResponse> CreateStatController(@RequestBody StatRequest.CreateStatRequest reqeust,@RequestHeader("Authorization") String token) throws Exception {
+//        statService.CreateStatService(reqeust,"123");
         return new ApiResponse<>(StatResponse.CreateStatResponse.builder()
                 .userStatSeq(123)
                 .strength(85)

@@ -19,20 +19,21 @@ public class QuestController {
         List<QuestResponse.Quest> fitness=new ArrayList<>();
         fitness.add(QuestResponse.Quest.builder()
                 .questId("QUEST1")
-                .content("벤치프레스 65kg 5세트 수행").build());
+                .content("벤치프레스 65kg 5세트 수행")
+                .isSuccess(false).build());
         fitness.add(QuestResponse.Quest.builder()
                 .questId("QUEST2")
-                .content("덤벨 벤치프레스 20kg 5세트").build());
+                .content("덤벨 벤치프레스 20kg 5세트").isSuccess(false).build());
         fitness.add(QuestResponse.Quest.builder()
                 .questId("QUEST3")
-                .content("인클라인 벤치프레스 55kg 5세트").build());
+                .content("인클라인 벤치프레스 55kg 5세트").isSuccess(false).build());
         QuestResponse.Quest sleep= QuestResponse.Quest.builder()
                 .questId("QUEST4")
                 .content("수면 7시간 30분 유지")
-                .build();
+                .isSuccess(false).build();
         QuestResponse.Quest daily= QuestResponse.Quest.builder()
                 .questId("QUEST5")
-                .content("점심 식단에 단백질 20g 추가").build();
+                .content("점심 식단에 단백질 20g 추가").isSuccess(false).build();
         QuestResponse.DailyQuest quests=QuestResponse.DailyQuest.builder()
                 .fitness(fitness)
                 .sleep(sleep)
