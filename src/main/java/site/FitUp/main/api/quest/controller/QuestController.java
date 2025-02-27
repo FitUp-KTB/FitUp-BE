@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import site.FitUp.main.api.quest.dtos.QuestRequest;
 import site.FitUp.main.api.quest.dtos.QuestResponse;
+import site.FitUp.main.api.quest.services.QuestService;
 import site.FitUp.main.common.ApiResponse;
 import site.FitUp.main.common.enums.QuestStatus;
 
@@ -14,8 +15,10 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/quests")
 public class QuestController {
+    private final QuestService questService;
     @PostMapping("")
     public ApiResponse<QuestResponse.CreateQuestsResponse>CreateQuestController(@RequestHeader("Authorization") String token, @RequestBody QuestRequest.CreateQuestsRequest request){
+//        questService.createQuestsService(request,"123");
         List<QuestResponse.Quest> fitness=new ArrayList<>();
         fitness.add(QuestResponse.Quest.builder()
                 .questId("QUEST1")
@@ -39,9 +42,11 @@ public class QuestController {
                 .sleep(sleep)
                 .daily(daily)
                 .build();
-        return new ApiResponse<>(QuestResponse.CreateQuestsResponse.builder()
-                .dailyResultSeq(12)
-                .dailyQuest(quests).build());
+//        return new ApiResponse<>(QuestResponse.CreateQuestsResponse.builder()
+//                .dailyResultSeq(12)
+//                .dailyQuest(quests).build());
+
+        return new ApiResponse<>(questService.createQuestsService(request,"123"));
     }
     @GetMapping("")
     public ApiResponse<QuestResponse.GetQuestsResponse>GetQuestsController(@RequestHeader("Authorization") String token){
