@@ -7,6 +7,7 @@ import site.FitUp.main.api.stat.dtos.StatResponse;
 import site.FitUp.main.api.stat.services.StatService;
 import site.FitUp.main.common.ApiResponse;
 import site.FitUp.main.common.enums.CharacterType;
+import site.FitUp.main.util.JwtUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,15 +19,17 @@ public class StatController {
     private final StatService statService;
     @PostMapping("")
     public ApiResponse<StatResponse.CreateStatResponse> CreateStatController(@RequestBody StatRequest.CreateStatRequest reqeust,@RequestHeader("Authorization") String token) throws Exception {
+        String userId= JwtUtil.extractUserId(token);
 //        statService.CreateStatService(reqeust,"123");
-        return new ApiResponse<>(StatResponse.CreateStatResponse.builder()
-                .userStatSeq(123)
-                .strength(85)
-                .endurance(78)
-                .speed(75)
-                .flexibility(65)
-                .stamina(80)
-                .characterType(CharacterType.POWER.toString()).build());
+//        return new ApiResponse<>(StatResponse.CreateStatResponse.builder()
+//                .userStatSeq(123)
+//                .strength(85)
+//                .endurance(78)
+//                .speed(75)
+//                .flexibility(65)
+//                .stamina(80)
+//                .characterType(CharacterType.POWER.toString()).build());
+        return new ApiResponse<>(statService.CreateStatService(reqeust,userId));
     }
     @GetMapping("")
     public ApiResponse<StatResponse.GetStatsResponse> GetStatsController(@RequestHeader("Authorization") String token){
