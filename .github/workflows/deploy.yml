@@ -2,7 +2,7 @@ name: CI/CD Pipeline for Backend
 'on':
   push:
     branches:
-      - main
+      - feat/cicd/#2
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
@@ -43,6 +43,12 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
       - name: Pull Latest Docker Image
+        env:
+          SPRING_PROFILES_ACTIVE: prod
+          SPRING_DATASOURCE_URL: ${{ secrets.SPRING_DATASOURCE_URL }}
+          SPRING_DATASOURCE_USERNAME: ${{ secrets.SPRING_DATASOURCE_USERNAME }}
+          SPRING_DATASOURCE_PASSWORD: ${{ secrets.SPRING_DATASOURCE_PASSWORD }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
           docker-compose down || true
           docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/backend:latest
