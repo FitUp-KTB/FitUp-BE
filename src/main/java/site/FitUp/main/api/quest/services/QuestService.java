@@ -10,4 +10,5 @@ public interface QuestService {
     QuestResponse.GetQuestsResponse getQuestsService(String userId);
 
     QuestResponse.GetQuestResponse getQuestService(String userId,long dailyResultSeq);
+    QuestResponse.DoQuestResponse doQuestService(String userId,long dailyResultSeq,String questId);
 }

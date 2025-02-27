@@ -89,13 +89,8 @@ public class QuestController {
     }
     @PostMapping("/{dailyResultSeq}/{questId}")
     public ApiResponse<QuestResponse.DoQuestResponse>DoQuestController(@RequestHeader("Authorization") String token, @PathVariable(value = "dailyResultSeq", required = true) int dailyResultSeq,@PathVariable(value = "questId", required = true) String questId){
-
-        return new ApiResponse<>(QuestResponse.DoQuestResponse.builder().dailyResultSeq(dailyResultSeq)
-                .questId(questId)
-                .questSuccessCount(2)
-                .questStatus(QuestStatus.SUCCESS.toString())
-                .updatedAt("2020-02-21")
-                .build());
+        String userId= JwtUtil.extractUserId(token);
+        return new ApiResponse<>(questService.doQuestService(userId,dailyResultSeq,questId));
     }
 
     @GetMapping("/tier")

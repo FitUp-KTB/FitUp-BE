@@ -253,6 +253,33 @@ public class QuestServiceImpl implements QuestService{
                 .sleep(sleepResponse)
                 .daily(dailyResponse).build();
     }
+    @Transactional
+    public QuestResponse.DoQuestResponse doQuestService(String userId,long dailyResultSeq,String questId){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        User user=userRepository.findById(userId).orElse(null);
+        DailyResult dailyResult=dailyResultRepository.findById(dailyResultSeq).orElse(null);
+        Quest quest=questRepository.findByDailyResultAndQuestId(dailyResult,questId);
+        if(!quest.getIsSuccess()) {
+            quest.setIsSuccess(true);
+            int currentCount = dailyResult.getQuestSuccessCount();
+            dailyResult.setQuestSuccessCount(currentCount + 1);
+            //만약 운동 퀘스트가 하나도 완료되지 않는 상태에서 운동퀘스트가 완료됬으면 Success로 변경
+            if (dailyResult.getQuestStatus().equals(QuestStatus.FAIL) && quest.getType().equals(QuestType.FITNESS)) {
+                dailyResult.setQuestStatus(QuestStatus.SUCCESS);
+            }
+            //완료된 퀘스트가 5 이상이면, perfect
+            if (dailyResult.getQuestSuccessCount() >= 5) {
+                dailyResult.setQuestStatus(QuestStatus.PERFECT);
+            }
+        }
+        return QuestResponse.DoQuestResponse.builder()
+                .dailyResultSeq(dailyResultSeq)
+                .questId(quest.getQuestId())
+                .questStatus(dailyResult.getQuestStatus().toString())
+                .questSuccessCount(dailyResult.getQuestSuccessCount())
+                .updatedAt(dailyResult.getUpdatedAt().toLocalDate().format(formatter))
+                .build();
+    }
     public String getSystemInstruction(){
         return  """
                     너는 사람들의 운동을 돕는 게임 기반의 퀘스트 생성 시스템이야

@@ -11,4 +11,5 @@ import java.util.List;
 public interface QuestRepository extends JpaRepository<Quest,String> {
 
     List<Quest> findAllByDailyResultAndType(DailyResult dailyResult, QuestType type);
+    Quest findByDailyResultAndQuestId(DailyResult dailyResult,String questId);
 }

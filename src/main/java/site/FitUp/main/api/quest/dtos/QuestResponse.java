@@ -65,7 +65,7 @@ public class QuestResponse {
     @Builder
     @Getter
     public static class DoQuestResponse{
-        private int dailyResultSeq;
+        private long dailyResultSeq;
         private String questId;
         private int questSuccessCount;
         private String questStatus;
