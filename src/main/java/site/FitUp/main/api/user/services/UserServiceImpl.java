@@ -6,10 +6,13 @@ import lombok.extern.slf4j.Slf4j;
 
 
 import org.springframework.stereotype.Service;
+import site.FitUp.main.api.stat.dtos.StatRequest;
 import site.FitUp.main.api.user.dtos.UserRequest;
 import site.FitUp.main.api.user.dtos.UserResponse;
 import site.FitUp.main.model.User;
+import site.FitUp.main.model.UserStat;
 import site.FitUp.main.repository.UserRepository;
+import site.FitUp.main.repository.UserStatRepository;
 import site.FitUp.main.util.JwtUtil;
 
 import java.security.MessageDigest;
@@ -22,7 +25,7 @@ import java.util.UUID;
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
-
+    private final UserStatRepository userStatRepository;
     @Override
     public UserResponse.CreateUserResponse CreateUserService(UserRequest.CreateUserRequest request) {
 
@@ -67,11 +70,28 @@ public class UserServiceImpl implements UserService {
 
     public UserResponse.GetUserResponse GetUserResponse(String userId){
         User user= userRepository.findById(userId).orElse(null);
+        UserStat userStat=userStatRepository.findTopByUserOrderByCreatedAtDesc(user);
+        if(userStat==null){
+            userStat=UserStat.builder()
+                    .height(0)
+                    .weight(0)
+                    .fat(0)
+                    .muscleMass(0)
+                    .pushUps(0)
+                    .sitUp(0)
+                    .runningPace(0.0)
+                    .runningTime(0)
+                    .squat(0)
+                    .benchPress(0)
+                    .deadLift(0).build();
+        }
+
         return UserResponse.GetUserResponse
                 .builder()
                 .email(user.getEmail())
                 .nickName(user.getNickname())
                 .name(user.getName())
+                .stat(userStat)
                 .build();
     }
     ///

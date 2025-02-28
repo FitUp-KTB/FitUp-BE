@@ -4,6 +4,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import site.FitUp.main.api.stat.dtos.StatRequest;
+import site.FitUp.main.model.UserStat;
 
 public class UserResponse {
     @Builder
@@ -30,6 +32,7 @@ public class UserResponse {
         private String email;
         private String name;
         private String nickName;
+        private UserStat stat;
     }
 
 }

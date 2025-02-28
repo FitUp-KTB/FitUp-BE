@@ -1,11 +1,13 @@
 package site.FitUp.main.api.stat.dtos;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 public class StatRequest {
     @Getter
     @Setter
+    @Builder
     public static class CreateStatRequest{
         private int height;
         private int weight;
