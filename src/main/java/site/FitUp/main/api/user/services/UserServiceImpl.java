@@ -91,7 +91,16 @@ public class UserServiceImpl implements UserService {
                 .email(user.getEmail())
                 .nickName(user.getNickname())
                 .name(user.getName())
-                .stat(userStat)
+                .height(userStat.getHeight())
+                .weight(userStat.getWeight())
+                .bodyFat(userStat.getFat())
+                .muscleMass(userStat.getMuscleMass())
+                .pushUps(userStat.getPushUps())
+                .sitUps(userStat.getSitUp())
+                .runningPace(userStat.getRunningPace())
+                .runningTime(userStat.getRunningTime())
+                .squat(userStat.getSquat())
+                .benchPress(userStat.getBenchPress())
                 .build();
     }
     ///
