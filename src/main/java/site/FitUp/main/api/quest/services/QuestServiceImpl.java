@@ -1,24 +1,6 @@
 package site.FitUp.main.api.quest.services;
 
 import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.*;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
-import site.FitUp.main.api.quest.dtos.QuestRequest;
-import site.FitUp.main.api.quest.dtos.QuestResponse;
-import site.FitUp.main.common.enums.QuestStatus;
-import site.FitUp.main.common.enums.QuestType;
-import site.FitUp.main.model.*;
-import site.FitUp.main.repository.*;
-
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -26,11 +8,36 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+import site.FitUp.main.api.quest.dtos.QuestRequest;
+import site.FitUp.main.api.quest.dtos.QuestResponse;
+import site.FitUp.main.common.enums.QuestStatus;
+import site.FitUp.main.common.enums.QuestType;
+import site.FitUp.main.model.DailyResult;
+import site.FitUp.main.model.Quest;
+import site.FitUp.main.model.User;
+import site.FitUp.main.model.UserStat;
+import site.FitUp.main.repository.DailyResultRepository;
+import site.FitUp.main.repository.QuestRepository;
+import site.FitUp.main.repository.UserRepository;
+import site.FitUp.main.repository.UserStatRepository;
+import site.FitUp.main.repository.UserStatResultRepository;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class QuestServiceImpl implements QuestService{
+public class QuestServiceImpl implements QuestService {
+
     private final RestTemplate restTemplate;
     private final UserStatRepository userStatRepository;
     private final UserStatResultRepository userStatResultRepository;
@@ -38,14 +45,16 @@ public class QuestServiceImpl implements QuestService{
     private final QuestRepository questRepository;
     private final DailyResultRepository dailyResultRepository;
     @Value("${gemini.api.key}")
-    private  String API_URL;
+    private String API_URL;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    public QuestResponse.CreateQuestsResponse createQuestsService(QuestRequest.CreateQuestsRequest request, String userId){
-        User user= userRepository.findById(userId).orElse(null);
-        UserStat userStat=userStatRepository.findTopByUserOrderByCreatedAtDesc(user);
-        if(userStat==null){
-            userStat=UserStat.builder()
+
+    public QuestResponse.CreateQuestsResponse createQuestsService(
+            QuestRequest.CreateQuestsRequest request, String userId) {
+        User user = userRepository.findById(userId).orElse(null);
+        UserStat userStat = userStatRepository.findTopByUserOrderByCreatedAtDesc(user);
+        if (userStat == null) {
+            userStat = UserStat.builder()
                     .pushUps(0)
                     .sitUp(0)
                     .runningPace(0.0)
@@ -54,7 +63,7 @@ public class QuestServiceImpl implements QuestService{
                     .benchPress(0)
                     .deadLift(0).build();
         }
-        log.info("Request Body : "+request.getMainCategory());
+        log.info("Request Body : " + request.getMainCategory());
         JSONObject stats = new JSONObject()
                 .put("pushups", userStat.getPushUps())
                 .put("situps", userStat.getSitUp())
@@ -79,113 +88,155 @@ public class QuestServiceImpl implements QuestService{
 
         HttpEntity<String> entity = new HttpEntity<>(requestBody.toString(), headers);
 
-        try {
-            // **새로운 API URL로 요청**
-            ResponseEntity<String> response = restTemplate.exchange(
+//        try {
+//            // **새로운 API URL로 요청**
+//            ResponseEntity<String> response = restTemplate.exchange(
+//
+//                API_URL + "/query", // 변경할 API URL
+//                HttpMethod.POST,
+//                entity,
+//                String.class
+//            );
+//
+//            if (response.getStatusCode() == HttpStatus.OK) {
+//
+//                // **응답 문자열에서 마크다운 제거**
+//                String rawResponse = response.getBody();
+//                logger.info("Raw Response: " + rawResponse);
+//
+//                // 마크다운(```json\n`) 및 ``` 제거
+//                String cleanedJson = rawResponse.replaceAll("```[a-zA-Z]*\\s*", "")
+//                    .replaceAll("```", "");
+//
+//                // \n 및 \ 제거
+//                cleanedJson = cleanedJson.replace("\\n", "").replace("\\", "").trim();
+//
+//                // 문자열이 큰따옴표로 감싸져 있는 경우 제거
+//                if (cleanedJson.startsWith("\"") && cleanedJson.endsWith("\"")) {
+//                    cleanedJson = cleanedJson.substring(1, cleanedJson.length() - 1);
+//                }
+//
+//                // 로그 출력 (정리된 JSON)
+//                logger.info("Cleaned JSON: " + cleanedJson);
+//
+//                // **JSON 파싱**
+//                JSONObject responseJson = new JSONObject(cleanedJson);
+//
+//                // **응답 JSON에서 올바른 키 값 사용 (daily_quests)**
+//                JSONObject dailyQuestsJson = responseJson.getJSONObject("daily_quests");
+//
+//                // **Fitness 퀘스트 파싱**
+//                List<QuestResponse.QuestDto> fitnessQuestDtos = new ArrayList<>();
+//                JSONObject fitnessObject = dailyQuestsJson.getJSONObject("fitness");
+//
+//                for (String key : fitnessObject.keySet()) {
+//                    JSONObject questObj = fitnessObject.getJSONObject(key);
+//                    QuestResponse.QuestDto questDto = QuestResponse.QuestDto.builder()
+//                        .questId(generateQuestId())
+//                        .content(questObj.getString("contents"))  // "description" → "contents"
+//                        .exp(questObj.getInt("points"))           // "exp" → "points"
+//                        .isSuccess(false)
+//                        .build();
+//                    fitnessQuestDtos.add(questDto);
+//                }
+//
+//                // **수면(Sleep) 퀘스트 파싱**
+//                QuestResponse.QuestDto sleepQuestDto = QuestResponse.QuestDto.builder()
+//                    .questId(generateQuestId())
+//                    .content(dailyQuestsJson.getJSONObject("sleep")
+//                        .getString("contents")) // "description" → "contents"
+//                    .exp(dailyQuestsJson.getJSONObject("sleep")
+//                        .getInt("points"))         // "exp" → "points"
+//                    .isSuccess(false)
+//                    .build();
+//
+//                // **일상(Daily) 퀘스트 파싱**
+//                QuestResponse.QuestDto dailyQuestDto = QuestResponse.QuestDto.builder()
+//                    .questId(generateQuestId())
+//                    .content(dailyQuestsJson.getJSONObject("daily")
+//                        .getString("contents")) // "description" → "contents"
+//                    .exp(dailyQuestsJson.getJSONObject("daily")
+//                        .getInt("points"))         // "exp" → "points"
+//                    .isSuccess(false)
+//                    .build();
+//
+//                // **최종 응답 객체 생성**
+//                QuestResponse.DailyQuest dailyQuestObject = QuestResponse.DailyQuest.builder()
+//                    .fitness(fitnessQuestDtos)
+//                    .sleep(sleepQuestDto)
+//                    .daily(dailyQuestDto)
+//                    .build();
+//
+//                return QuestResponse.CreateQuestsResponse.builder()
+//                    .dailyQuest(dailyQuestObject)
+//                    .build();
+//
+//
+//            } else {
+//                logger.error("Error Response: " + response.getStatusCode());
+//                throw new Exception("Failed to get a valid response: " + response.getStatusCode());
+//            }
+//        } catch (JSONException e) {
+//            logger.error("JSON Parsing Error: " + e.getMessage());
+//        } catch (Exception e) {
+//            logger.error("Error Response: " + e);
+//        }
 
-                    API_URL+"/query", // 변경할 API URL
-                    HttpMethod.POST,
-                    entity,
-                    String.class
-            );
+        List<QuestResponse.QuestDto> fitnessQuestDtos = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
 
-            if (response.getStatusCode() == HttpStatus.OK) {
-
-                // **응답 문자열에서 마크다운 제거**
-                String rawResponse = response.getBody();
-                logger.info("Raw Response: " + rawResponse);
-
-                // 마크다운(```json\n`) 및 ``` 제거
-                String cleanedJson = rawResponse.replaceAll("```[a-zA-Z]*\\s*", "").replaceAll("```", "");
-
-                // \n 및 \ 제거
-                cleanedJson = cleanedJson.replace("\\n", "").replace("\\", "").trim();
-
-                // 문자열이 큰따옴표로 감싸져 있는 경우 제거
-                if (cleanedJson.startsWith("\"") && cleanedJson.endsWith("\"")) {
-                    cleanedJson = cleanedJson.substring(1, cleanedJson.length() - 1);
-                }
-
-                // 로그 출력 (정리된 JSON)
-                logger.info("Cleaned JSON: " + cleanedJson);
-
-                // **JSON 파싱**
-                JSONObject responseJson = new JSONObject(cleanedJson);
-
-                // **응답 JSON에서 올바른 키 값 사용 (daily_quests)**
-                JSONObject dailyQuestsJson = responseJson.getJSONObject("daily_quests");
-
-                // **Fitness 퀘스트 파싱**
-                List<QuestResponse.QuestDto> fitnessQuestDtos = new ArrayList<>();
-                JSONObject fitnessObject = dailyQuestsJson.getJSONObject("fitness");
-
-                for (String key : fitnessObject.keySet()) {
-                    JSONObject questObj = fitnessObject.getJSONObject(key);
-                    QuestResponse.QuestDto questDto = QuestResponse.QuestDto.builder()
-                            .questId(generateQuestId())
-                            .content(questObj.getString("contents"))  // "description" → "contents"
-                            .exp(questObj.getInt("points"))           // "exp" → "points"
-                            .isSuccess(false)
-                            .build();
-                    fitnessQuestDtos.add(questDto);
-                }
-
-                // **수면(Sleep) 퀘스트 파싱**
-                QuestResponse.QuestDto sleepQuestDto = QuestResponse.QuestDto.builder()
-                        .questId(generateQuestId())
-                        .content(dailyQuestsJson.getJSONObject("sleep").getString("contents")) // "description" → "contents"
-                        .exp(dailyQuestsJson.getJSONObject("sleep").getInt("points"))         // "exp" → "points"
-                        .isSuccess(false)
-                        .build();
-
-                // **일상(Daily) 퀘스트 파싱**
-                QuestResponse.QuestDto dailyQuestDto = QuestResponse.QuestDto.builder()
-                        .questId(generateQuestId())
-                        .content(dailyQuestsJson.getJSONObject("daily").getString("contents")) // "description" → "contents"
-                        .exp(dailyQuestsJson.getJSONObject("daily").getInt("points"))         // "exp" → "points"
-                        .isSuccess(false)
-                        .build();
-
-                // **최종 응답 객체 생성**
-                QuestResponse.DailyQuest dailyQuestObject = QuestResponse.DailyQuest.builder()
-                        .fitness(fitnessQuestDtos)
-                        .sleep(sleepQuestDto)
-                        .daily(dailyQuestDto)
-                        .build();
-
-                return QuestResponse.CreateQuestsResponse.builder()
-                        .dailyQuest(dailyQuestObject)
-                        .build();
-
-
-
-            } else {
-                logger.error("Error Response: " + response.getStatusCode());
-                throw new Exception("Failed to get a valid response: " + response.getStatusCode());
-            }
-        } catch (JSONException e) {
-            logger.error("JSON Parsing Error: " + e.getMessage());
-        } catch (Exception e) {
-            logger.error("Error Response: " + e);
+            QuestResponse.QuestDto questDto = QuestResponse.QuestDto.builder()
+                    .questId(generateQuestId())
+                    .content(i + "바퀴 달리기")  // "description" → "contents"
+                    .exp(i * 50)           // "exp" → "points"
+                    .isSuccess(false)
+                    .build();
+            fitnessQuestDtos.add(questDto);
         }
+        //수면 퀘스트 파싱
+        QuestResponse.QuestDto sleepQuestDto = QuestResponse.QuestDto.builder()
+                .questId(generateQuestId())
+                .content("잠자기") // "description" → "contents"
+                .exp(200)         // "exp" → "points"
+                .isSuccess(false)
+                .build();
 
-        return null;
+        // **일상(Daily) 퀘스트 파싱**
+        QuestResponse.QuestDto dailyQuestDto = QuestResponse.QuestDto.builder()
+                .questId(generateQuestId())
+                .content("운동하기") // "description" → "contents"
+                .exp(300)         // "exp" → "points"
+                .isSuccess(false)
+                .build();
+
+        // **최종 응답 객체 생성**
+        QuestResponse.DailyQuest dailyQuestObject = QuestResponse.DailyQuest.builder()
+                .fitness(fitnessQuestDtos)
+                .sleep(sleepQuestDto)
+                .daily(dailyQuestDto)
+                .build();
+
+        return QuestResponse.CreateQuestsResponse.builder()
+                .dailyQuest(dailyQuestObject)
+                .build();
+
     }
 
     @Transactional
-    public QuestResponse.AcceptQuestsResponse acceptQuestService(QuestRequest.AcceptQuestRequest request, String userId){
-        User user=userRepository.findById(userId).orElse(null);
+    public QuestResponse.AcceptQuestsResponse acceptQuestService(
+            QuestRequest.AcceptQuestRequest request, String userId) {
+        User user = userRepository.findById(userId).orElse(null);
         //데일리 퀘스트 생성
-        DailyResult dailyResult=DailyResult.builder()
+        DailyResult dailyResult = DailyResult.builder()
                 .questStatus(QuestStatus.FAIL)
                 .pointSum(0)
                 .questSuccessCount(0)
                 .user(user).build();
-        DailyResult newDailyResult=dailyResultRepository.save(dailyResult);
+        DailyResult newDailyResult = dailyResultRepository.save(dailyResult);
 
         //피트니스 퀘스트
-        for(QuestRequest.RequestQuestDto fitness:request.getDailyQuest().getFitness()){
-            Quest quest=Quest.builder()
+        for (QuestRequest.RequestQuestDto fitness : request.getDailyQuest().getFitness()) {
+            Quest quest = Quest.builder()
                     .questId(fitness.getQuestId())
                     .content(fitness.getContent())
                     .dailyResult(newDailyResult)
@@ -195,7 +246,7 @@ public class QuestServiceImpl implements QuestService{
             questRepository.save(quest);
         }
         //잠 퀘스트
-        Quest sleepQuest=Quest.builder()
+        Quest sleepQuest = Quest.builder()
                 .questId(request.getDailyQuest().getSleep().getQuestId())
                 .content(request.getDailyQuest().getSleep().getContent())
                 .point(request.getDailyQuest().getSleep().getExp())
@@ -204,7 +255,7 @@ public class QuestServiceImpl implements QuestService{
                 .dailyResult(newDailyResult).build();
         questRepository.save(sleepQuest);
         //생활 패턴 퀘스트
-        Quest dailyQeust=Quest.builder()
+        Quest dailyQeust = Quest.builder()
                 .questId(request.getDailyQuest().getDaily().getQuestId())
                 .content(request.getDailyQuest().getDaily().getContent())
                 .point(request.getDailyQuest().getDaily().getExp())
@@ -218,11 +269,13 @@ public class QuestServiceImpl implements QuestService{
                 .dailyQuest(request.getDailyQuest()).build();
 
     }
-    public QuestResponse.GetQuestsResponse getQuestsService(String userId){
+
+    public QuestResponse.GetQuestsResponse getQuestsService(String userId) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        User user=userRepository.findById(userId).orElse(null);
-        List<DailyResult> dailyResults=dailyResultRepository.findAllByUserOrderByCreatedAtDesc(user);
-        List<QuestResponse.QuestsRecord> questsRecords=dailyResults.stream().map(dailyResult -> {
+        User user = userRepository.findById(userId).orElse(null);
+        List<DailyResult> dailyResults = dailyResultRepository.findAllByUserOrderByCreatedAtDesc(
+                user);
+        List<QuestResponse.QuestsRecord> questsRecords = dailyResults.stream().map(dailyResult -> {
             return QuestResponse.QuestsRecord.builder()
                     .dailyResultSeq(dailyResult.getDailyResultSeq())
                     .questStatus(dailyResult.getQuestStatus().toString())
@@ -233,25 +286,28 @@ public class QuestServiceImpl implements QuestService{
         return QuestResponse.GetQuestsResponse.builder().quests(questsRecords).build();
     }
 
-    public QuestResponse.GetQuestResponse getQuestService(String userId,long dailyResultSeq){
-        DailyResult dailyResult=dailyResultRepository.findById(dailyResultSeq).orElse(null);
-        List<Quest> fitnessList=questRepository.findAllByDailyResultAndType(dailyResult,QuestType.FITNESS);
-        Quest sleep=questRepository.findAllByDailyResultAndType(dailyResult,QuestType.SLEEP).get(0);
-        Quest daily=questRepository.findAllByDailyResultAndType(dailyResult,QuestType.DAILY).get(0);
-        List<QuestResponse.QuestRecord> fitnessResponse=fitnessList.stream().map(fitness->{
+    public QuestResponse.GetQuestResponse getQuestService(String userId, long dailyResultSeq) {
+        DailyResult dailyResult = dailyResultRepository.findById(dailyResultSeq).orElse(null);
+        List<Quest> fitnessList = questRepository.findAllByDailyResultAndType(dailyResult,
+                QuestType.FITNESS);
+        Quest sleep = questRepository.findAllByDailyResultAndType(dailyResult, QuestType.SLEEP)
+                .get(0);
+        Quest daily = questRepository.findAllByDailyResultAndType(dailyResult, QuestType.DAILY)
+                .get(0);
+        List<QuestResponse.QuestRecord> fitnessResponse = fitnessList.stream().map(fitness -> {
             return QuestResponse.QuestRecord.builder()
                     .questId(fitness.getQuestId())
                     .content(fitness.getContent())
                     .exp(fitness.getPoint())
                     .isSuccess(fitness.getIsSuccess()).build();
         }).toList();
-        QuestResponse.QuestRecord sleepResponse=QuestResponse.QuestRecord.builder()
+        QuestResponse.QuestRecord sleepResponse = QuestResponse.QuestRecord.builder()
                 .questId(sleep.getQuestId())
                 .content(sleep.getContent())
                 .exp(sleep.getPoint())
                 .isSuccess(sleep.getIsSuccess())
                 .build();
-        QuestResponse.QuestRecord dailyResponse=QuestResponse.QuestRecord.builder()
+        QuestResponse.QuestRecord dailyResponse = QuestResponse.QuestRecord.builder()
                 .questId(daily.getQuestId())
                 .content(daily.getContent())
                 .exp(daily.getPoint())
@@ -262,20 +318,23 @@ public class QuestServiceImpl implements QuestService{
                 .sleep(sleepResponse)
                 .daily(dailyResponse).build();
     }
+
     @Transactional
-    public QuestResponse.DoQuestResponse doQuestService(String userId,long dailyResultSeq,String questId){
+    public QuestResponse.DoQuestResponse doQuestService(String userId, long dailyResultSeq,
+            String questId) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        User user=userRepository.findById(userId).orElse(null);
-        DailyResult dailyResult=dailyResultRepository.findById(dailyResultSeq).orElse(null);
-        Quest quest=questRepository.findByDailyResultAndQuestId(dailyResult,questId);
-        if(!quest.getIsSuccess()) {
+        User user = userRepository.findById(userId).orElse(null);
+        DailyResult dailyResult = dailyResultRepository.findById(dailyResultSeq).orElse(null);
+        Quest quest = questRepository.findByDailyResultAndQuestId(dailyResult, questId);
+        if (!quest.getIsSuccess()) {
             quest.setIsSuccess(true);
             int currentCount = dailyResult.getQuestSuccessCount();
-            int currentExp=dailyResult.getPointSum();
+            int currentExp = dailyResult.getPointSum();
             dailyResult.setQuestSuccessCount(currentCount + 1);
-            dailyResult.setPointSum(currentExp+quest.getPoint());
+            dailyResult.setPointSum(currentExp + quest.getPoint());
             //만약 운동 퀘스트가 하나도 완료되지 않는 상태에서 운동퀘스트가 완료됬으면 Success로 변경
-            if (dailyResult.getQuestStatus().equals(QuestStatus.FAIL) && quest.getType().equals(QuestType.FITNESS)) {
+            if (dailyResult.getQuestStatus().equals(QuestStatus.FAIL) && quest.getType()
+                    .equals(QuestType.FITNESS)) {
                 dailyResult.setQuestStatus(QuestStatus.SUCCESS);
             }
             //완료된 퀘스트가 5 이상이면, perfect
@@ -292,14 +351,16 @@ public class QuestServiceImpl implements QuestService{
                 .build();
     }
 
-    public QuestResponse.GetQuestTierResponse getQuestTierService(String userId){
-        User user= userRepository.findById(userId).orElse(null);
+    public QuestResponse.GetQuestTierResponse getQuestTierService(String userId) {
+        User user = userRepository.findById(userId).orElse(null);
         LocalDate now = LocalDate.now(ZoneId.of("Asia/Seoul"));
-        int month=now.getMonthValue();
+        int month = now.getMonthValue();
         int previousMonth = (month + 10) % 12 + 1;
-        int nowMonthExp= Optional.ofNullable(dailyResultRepository.sumPointSumByMonthAndUser(month, user)).orElse(0);
+        int nowMonthExp = Optional.ofNullable(
+                dailyResultRepository.sumPointSumByMonthAndUser(month, user)).orElse(0);
 
-        int previousMonthExp= Optional.ofNullable(dailyResultRepository.sumPointSumByMonthAndUser(previousMonth, user)).orElse(0);
+        int previousMonthExp = Optional.ofNullable(
+                dailyResultRepository.sumPointSumByMonthAndUser(previousMonth, user)).orElse(0);
         return QuestResponse.GetQuestTierResponse.builder()
                 .currentExp(nowMonthExp)
                 .previousExp(previousMonthExp)
@@ -307,8 +368,9 @@ public class QuestServiceImpl implements QuestService{
 
 
     }
-    public String getSystemInstruction(){
-        return  """
+
+    public String getSystemInstruction() {
+        return """
                     너는 사람들의 운동을 돕는 게임 기반의 퀘스트 생성 시스템이야
                     너가 수행해야 할 역할은 퀘스트 생성이야
                     {
@@ -342,11 +404,11 @@ public class QuestServiceImpl implements QuestService{
                         "daily" : {"contents" : "아침 공복에 물 500ml 마시기", "points" : 5}
                       }
                     }
-                    
+                
                     형태의 출력을 내도록 할거야
-                    
+                
                     daily_quests의 daily는 목표에 맞는 식단이나 생활습관 등 관련하여 퀘스트를 만들어주고 goal과 last_quest_status에만 영향을 받게 해줘
-                    
+                
                     daily_quests의 fitness는 입력 데이터의 main_category,sub_category, user_request와 goal, stats, last_quest_status, gender, chronic의 영향을 받아 종목 및 난이도가 조정될거야 종목은 최대한 세부적으로 선정을 해줘, 세트 운동의 경우 몇개 몇세트인지도 알려줘야해 chronic 의 값이 없으면 상관이 없지만 있을 때 해당 질환으로 인해 특정 운동이 악영향이 있거나 할 수 있으니 강도나 종목의 선정을 진행할 때 반영해줘
                     ---
                     main_category == "부상"  일때 sub category는 없이 user request에 부상 부위랑 증상 내용이 있으니까 "daily_quests"의 "fitness" 값을 운동말고 처방 혹은 휴식관리를 추천해줘.
@@ -355,8 +417,10 @@ public class QuestServiceImpl implements QuestService{
                     모든 출력은 설명 및 상세 분석이 없이 단순 JSON만 반환해줘
                 """;
     }
+
     // UUID를 사용하여 QuestId 생성하는 메서드 추가
     private String generateQuestId() {
-        return "QUEST-" + UUID.randomUUID().toString().replaceAll("-", "").substring(0, 8); // 8자리 랜덤 ID
+        return "QUEST-" + UUID.randomUUID().toString().replaceAll("-", "")
+                .substring(0, 8); // 8자리 랜덤 ID
     }
 }
