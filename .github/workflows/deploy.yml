@@ -63,6 +63,13 @@ jobs:
           script: |
             mkdir -p /home/${{ secrets.SSH_USER }}/backend
 
+      - name: Debug - Check docker-compose.yml existence
+        run: |
+          echo "Current Directory: $(pwd)"
+          echo "Files:"
+          ls -al
+          test -f ./docker-compose.yml && echo "✅ docker-compose.yml exists" || echo "❌ docker-compose.yml not found"
+
       - name: Copy docker-compose.yml to server
         uses: appleboy/scp-action@v0.1.5
         with:
