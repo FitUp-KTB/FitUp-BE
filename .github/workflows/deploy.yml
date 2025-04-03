@@ -90,6 +90,9 @@ jobs:
               IMAGE_NAME=${{ secrets.DOCKER_HUB_USERNAME }}/fitup-backend-dev
             fi
 
+            docker network inspect fitup-network >/dev/null 2>&1 || \
+              docker network create fitup-network
+
             docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} -p ${{ secrets.DOCKER_HUB_PASSWORD }}
             docker pull $IMAGE_NAME:${{ github.ref_name }}
 
