@@ -19,8 +19,8 @@ import java.util.List;
 public class StatController {
     private final StatService statService;
     @PostMapping("")
-    public ApiResponse<StatResponse.CreateStatResponse> CreateStatController(@RequestBody StatRequest.CreateStatRequest request,@RequestHeader("Authorization") String token) throws Exception {
-        String userId= JwtUtil.extractUserId(token);
+    public ApiResponse<StatResponse.CreateStatResponse> CreateStatController(@RequestBody StatRequest.CreateStatRequest request) throws Exception {
+
 //        statService.CreateStatService(reqeust,"123");
 //        return new ApiResponse<>(StatResponse.CreateStatResponse.builder()
 //                .userStatSeq(123)
@@ -30,11 +30,10 @@ public class StatController {
 //                .flexibility(65)
 //                .stamina(80)
 //                .characterType(CharacterType.POWER.toString()).build());
-        return new ApiResponse<>(statService.CreateStatService(request,userId));
+        return new ApiResponse<>(statService.CreateStatService(request,JwtUtil.getAuthenticatedUserId()));
     }
     @GetMapping("")
-    public ApiResponse<StatResponse.GetStatsResponse> GetStatsController(@RequestHeader("Authorization") String token){
-        String userId= JwtUtil.extractUserId(token);
+    public ApiResponse<StatResponse.GetStatsResponse> GetStatsController(){
 //        List<StatResponse.GetStatResponse> lists=new ArrayList<>();
 //        int count=11;
 //        for(int i=0; i<4;i++){
@@ -53,7 +52,7 @@ public class StatController {
 //        }
 
 
-        return new ApiResponse<>(statService.GetStatsService(userId));
+        return new ApiResponse<>(statService.GetStatsService(JwtUtil.getAuthenticatedUserId()));
     }
 
 }

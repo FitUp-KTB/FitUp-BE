@@ -1,5 +1,6 @@
 package site.FitUp.main.api.user.dtos;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import site.FitUp.main.common.enums.Gender;
@@ -12,9 +13,14 @@ public class UserRequest {
     public static class CreateUserRequest{
         private String email;
         private String password;
-        private String nickname;
         private String name;
         private Gender gender;
+
+    }
+
+    @Getter
+    @Builder
+    public static class CreateUserProfileRequest{
         private LocalDate birthDate;
         private int targetWeight;
         private String goal;

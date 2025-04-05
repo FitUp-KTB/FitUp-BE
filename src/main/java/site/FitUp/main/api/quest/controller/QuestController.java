@@ -18,8 +18,8 @@ import java.util.List;
 public class QuestController {
     private final QuestService questService;
     @PostMapping("")
-    public ApiResponse<QuestResponse.CreateQuestsResponse>CreateQuestController(@RequestHeader("Authorization") String token, @RequestBody QuestRequest.CreateQuestsRequest request){
-        String userId= JwtUtil.extractUserId(token);
+    public ApiResponse<QuestResponse.CreateQuestsResponse>CreateQuestController( @RequestBody QuestRequest.CreateQuestsRequest request){
+
         List<QuestResponse.QuestDto> fitness=new ArrayList<>();
         fitness.add(QuestResponse.QuestDto.builder()
                 .questId("QUEST1")
@@ -46,16 +46,15 @@ public class QuestController {
 //        return new ApiResponse<>(QuestResponse.CreateQuestsResponse.builder()
 //                .dailyQuest(quests).build());
 
-        return new ApiResponse<>(questService.createQuestsService(request,userId));
+        return new ApiResponse<>(questService.createQuestsService(request,JwtUtil.getAuthenticatedUserId()));
     }
     @GetMapping("")
-    public ApiResponse<QuestResponse.GetQuestsResponse>GetQuestsController(@RequestHeader("Authorization") String token){
-        String userId= JwtUtil.extractUserId(token);
-        return new ApiResponse<>(questService.getQuestsService(userId));
+    public ApiResponse<QuestResponse.GetQuestsResponse>GetQuestsController(){
+
+        return new ApiResponse<>(questService.getQuestsService(JwtUtil.getAuthenticatedUserId()));
     }
     @GetMapping("/{dailyResultSeq}")
-    public ApiResponse<QuestResponse.GetQuestResponse>GetQuestController(@RequestHeader("Authorization") String token, @PathVariable(value = "dailyResultSeq", required = true) long dailyResultSeq){
-        String userId= JwtUtil.extractUserId(token);
+    public ApiResponse<QuestResponse.GetQuestResponse>GetQuestController( @PathVariable(value = "dailyResultSeq", required = true) long dailyResultSeq){
         List<QuestResponse.QuestRecord> fitness=new ArrayList<>();
         fitness.add(QuestResponse.QuestRecord.builder()
                 .questId("QUEST1")
@@ -85,23 +84,23 @@ public class QuestController {
                 .daily(daily)
                 .build();
 //        return new ApiResponse<>(quests);
-        return new ApiResponse<>(questService.getQuestService(userId,dailyResultSeq));
+        return new ApiResponse<>(questService.getQuestService(JwtUtil.getAuthenticatedUserId(),dailyResultSeq));
     }
     @PostMapping("/{dailyResultSeq}/{questId}")
-    public ApiResponse<QuestResponse.DoQuestResponse>DoQuestController(@RequestHeader("Authorization") String token, @PathVariable(value = "dailyResultSeq", required = true) int dailyResultSeq,@PathVariable(value = "questId", required = true) String questId){
-        String userId= JwtUtil.extractUserId(token);
-        return new ApiResponse<>(questService.doQuestService(userId,dailyResultSeq,questId));
+    public ApiResponse<QuestResponse.DoQuestResponse>DoQuestController( @PathVariable(value = "dailyResultSeq", required = true) int dailyResultSeq,@PathVariable(value = "questId", required = true) String questId){
+
+        return new ApiResponse<>(questService.doQuestService(JwtUtil.getAuthenticatedUserId(),dailyResultSeq,questId));
     }
 
     @GetMapping("/tier")
-    public ApiResponse<QuestResponse.GetQuestTierResponse>GetQuestsTierController(@RequestHeader("Authorization")String token){
-        String userId= JwtUtil.extractUserId(token);
-        return new ApiResponse<>(questService.getQuestTierService(userId));
+    public ApiResponse<QuestResponse.GetQuestTierResponse>GetQuestsTierController(){
+
+        return new ApiResponse<>(questService.getQuestTierService(JwtUtil.getAuthenticatedUserId()));
     }
     @PostMapping("/accept")
-    public ApiResponse<QuestResponse.AcceptQuestsResponse>AcceptQuestsController(@RequestBody QuestRequest.AcceptQuestRequest request,@RequestHeader("Authorization")String token){
-        String userId= JwtUtil.extractUserId(token);
-        return new ApiResponse<>(questService.acceptQuestService(request,userId));
+    public ApiResponse<QuestResponse.AcceptQuestsResponse>AcceptQuestsController(@RequestBody QuestRequest.AcceptQuestRequest request){
+
+        return new ApiResponse<>(questService.acceptQuestService(request,JwtUtil.getAuthenticatedUserId()));
     }
 
 }

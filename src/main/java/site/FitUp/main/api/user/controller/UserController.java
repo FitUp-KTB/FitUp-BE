@@ -14,6 +14,7 @@ import site.FitUp.main.api.user.services.UserService;
 import site.FitUp.main.common.ApiResponse;
 import site.FitUp.main.util.JwtUtil;
 
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/users")
@@ -28,12 +29,20 @@ public class UserController {
         return new ApiResponse<>(userService.CreateUserService(request));
     }
 
-    @GetMapping("")
-    public ApiResponse<UserResponse.GetUserResponse> GetUserController(
-            @RequestHeader("Authorization") String token) {
+    @PostMapping("/profile")
+    public ApiResponse<String> createUserProfileController(
+            @RequestBody UserRequest.CreateUserProfileRequest request) {
 
-        String userId = JwtUtil.extractUserId(token);
-        return new ApiResponse<>(userService.GetUserResponse(userId));
+        return new ApiResponse<>(userService.createUserProfileService(request, JwtUtil.getAuthenticatedUserId()));
+
+    }
+
+
+    @GetMapping("")
+    public ApiResponse<UserResponse.GetUserResponse> GetUserController() {
+
+
+        return new ApiResponse<>(userService.GetUserResponse(JwtUtil.getAuthenticatedUserId()));
     }
 
     @PostMapping("/token")
@@ -45,10 +54,9 @@ public class UserController {
 
     @PatchMapping("/target")
     public ApiResponse<UserResponse.EditTargetResponse> EditTargetController(
-            @RequestHeader("Authorization") String token,
             @RequestBody UserRequest.EditUserRequest request) {
-        String userId = JwtUtil.extractUserId(token);
-        return new ApiResponse<>(userService.EditTargetService(request, userId));
+
+        return new ApiResponse<>(userService.EditTargetService(request, JwtUtil.getAuthenticatedUserId()));
     }
 
 }
