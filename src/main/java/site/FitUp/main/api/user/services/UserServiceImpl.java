@@ -1,9 +1,6 @@
 package site.FitUp.main.api.user.services;
 
 import jakarta.transaction.Transactional;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +9,7 @@ import org.springframework.stereotype.Service;
 import site.FitUp.main.api.user.dtos.UserRequest;
 import site.FitUp.main.api.user.dtos.UserResponse;
 import site.FitUp.main.common.enums.MessageCode;
+import site.FitUp.main.exception.UserException.UserException.UserIsValidException;
 import site.FitUp.main.model.User;
 import site.FitUp.main.model.UserStat;
 import site.FitUp.main.repository.UserRepository;
@@ -26,10 +24,13 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserStatRepository userStatRepository;
     private final PasswordEncoder passwordEncoder;
+
     @Override
     public UserResponse.CreateUserResponse CreateUserService(
             UserRequest.CreateUserRequest request) {
-
+        if (userRepository.findByEmail(request.getEmail()) != null) {
+            throw new UserIsValidException();
+        }
         String newUserId = generateUserId();
         User user = User.builder()
                 .userId(newUserId)
@@ -44,11 +45,12 @@ public class UserServiceImpl implements UserService {
                 .accessToken(JwtUtil.generateAccessToken(newUserId))
                 .refreshToken(JwtUtil.generateRefreshToken(newUserId)).build();
     }
+
     @Override
     @Transactional
-    public String createUserProfileService(UserRequest.CreateUserProfileRequest request,String userId){
-        User user=userRepository.findById(userId).orElse(null);
-
+    public String createUserProfileService(UserRequest.CreateUserProfileRequest request,
+            String userId) {
+        User user = userRepository.findById(userId).orElse(null);
 
         user.setBirthDate(request.getBirthDate());
         user.setTargetWeight(request.getTargetWeight());
@@ -58,6 +60,7 @@ public class UserServiceImpl implements UserService {
         return MessageCode.PROFILE_UPDATED.getMessage();
 
     }
+
     @Override
     public UserResponse.LoginUserResponse LoginUserService(UserRequest.LoginUserRequest request)
             throws IllegalAccessException {
@@ -120,7 +123,6 @@ public class UserServiceImpl implements UserService {
         return "USER-" + UUID.randomUUID().toString().replaceAll("-", "")
                 .substring(0, 8); // 8자리 랜덤 ID
     }
-
 
 
 }
