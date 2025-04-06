@@ -56,12 +56,12 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/v1/users", "/api/v1/users/token", "/health").permitAll()
+                        .requestMatchers("/api/v1/users", "/api/v1/users/token", "/api/v1/health").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(org.springframework.security.config.http.SessionCreationPolicy.STATELESS))
                 .addFilter(corsConfig.corsFilter())
-                .addFilterBefore(new JwtAuthenticationFilter(jwtUtil, List.of("/api/v1/users", "/api/v1/users/token",  "/health")), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new JwtAuthenticationFilter(jwtUtil, List.of("/api/v1/users", "/api/v1/users/token",  "/api/v1/health")), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
