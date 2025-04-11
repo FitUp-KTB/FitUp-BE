@@ -1,29 +1,92 @@
 package site.FitUp.main.util;
 
 import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.Keys;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
 
+import java.security.Key;
 import java.util.Date;
 
+@Component
+@Slf4j
 public class JwtUtil {
-    private static final String SECRET_KEY = "secretsecretsecretsecretsecretsecretsecretsecretsecret";  // 비밀 키 (실제 환경에서는 안전하게 관리해야 함)
+    private static String SECRET_KEY;
+    private static Long ACCESS_TOKEN_EXPIRATION;
+    private static Long REFRESH_TOKEN_EXPIRATION;
 
-    // JWT 토큰 생성 메서드
-    public static String generateToken(String userId) {
+    // 생성자에서 주입받도록 수정
+    public JwtUtil(
+            @Value("${jwt.secret-key}") String secretKey,
+            @Value("${jwt.ACCESS_TOKEN_EXPIRATION}") Long accessTokenExpiration,
+            @Value("${jwt.REFRESH_TOKEN_EXPIRATION}") Long refreshTokenExpiration) {
+        this.SECRET_KEY = secretKey;
+        this.ACCESS_TOKEN_EXPIRATION = accessTokenExpiration;
+        this.REFRESH_TOKEN_EXPIRATION = refreshTokenExpiration;
+    }
+
+    public static String generateAccessToken(String userId) {
         return Jwts.builder()
                 .setSubject(userId)
                 .setIssuedAt(new Date())
-                .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
+                .signWith(SignatureAlgorithm.HS256, SECRET_KEY.getBytes())
+                .setExpiration(new Date(System.currentTimeMillis() + ACCESS_TOKEN_EXPIRATION))
                 .compact();
     }
 
-    // JWT 토큰에서 userId를 추출하는 메서드 (Bearer 토큰 처리)
-    public static String extractUserId(String bearerToken) {
-        // Bearer 문자열을 제거하여 토큰 부분만 추출
-        String token = bearerToken.substring(7);  // "Bearer " 길이는 7
-        JwtParser parser = Jwts.parserBuilder()
-                .setSigningKey(SECRET_KEY)  // 서명 검증을 위한 비밀 키 설정
-                .build();
-        Claims claims = parser.parseClaimsJws(token).getBody();  // 서명된 JWT 파싱
-        return claims.getSubject();  // JWT의 subject는 userId로 저장됩니다.
+    public static String generateRefreshToken(String userId) {
+        return Jwts.builder()
+                .setSubject(userId)
+                .setIssuedAt(new Date())
+                .signWith(SignatureAlgorithm.HS256, SECRET_KEY.getBytes())
+                .setExpiration(new Date(System.currentTimeMillis() + REFRESH_TOKEN_EXPIRATION))
+                .compact();
     }
+
+    public static String getAuthenticatedUserId() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null) {
+            log.warn("Authentication is NULL in DELETE request");
+        }
+
+        log.info("Authenticated userId: {}", authentication.getName());
+        return authentication.getName();
+    }
+
+    private Key getSigningKey() {
+        return Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
+    }
+
+    public String extractUserId(String bearerToken) {
+        String token = bearerToken.substring(7);
+        JwtParser parser = Jwts.parserBuilder()
+                .setSigningKey(SECRET_KEY.getBytes())
+                .build();
+        Claims claims = parser.parseClaimsJws(token).getBody();
+        return claims.getSubject();
+    }
+
+    // 토큰 검증
+    public Claims validateToken(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(getSigningKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+    }
+
+    // 토큰이 만료되었는지 확인
+    public boolean isTokenExpired(String token) {
+        try {
+            return validateToken(token).getExpiration().before(new Date());
+        } catch (ExpiredJwtException e) {
+            return true;
+        }
+    }
+
+
 }

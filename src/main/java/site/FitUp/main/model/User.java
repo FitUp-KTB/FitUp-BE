@@ -26,8 +26,6 @@ public class User extends BaseTime{
     @Column(length = 255, nullable = false)
     private String password;
 
-    @Column(length = 255, nullable = false)
-    private String nickname;
 
     @Column(length = 255, nullable = false)
     private String name;
@@ -42,10 +40,9 @@ public class User extends BaseTime{
     @Column(columnDefinition = "TEXT")
     private String chronic;
 
-    @Column(nullable = false)
     private Integer targetWeight;
 
-    @Column(nullable = false)
+
     private LocalDate birthDate;
 
 
