@@ -65,12 +65,12 @@ jobs:
           if [[ "${GITHUB_REF##*/}" == "main" ]]; then
             IMAGE_NAME="${{ secrets.DOCKER_HUB_USERNAME }}/fitup-backend"
             CONTAINER_NAME="fitup-backend"
+            PROFILE="prod"
           else
             IMAGE_NAME="${{ secrets.DOCKER_HUB_USERNAME }}/fitup-backend-dev"
             CONTAINER_NAME="fitup-backend-dev"
+            PROFILE="dev"
           fi
-
-          PROFILE="${GITHUB_REF##*/}"
 
           ssh -o StrictHostKeyChecking=no \
             -o UserKnownHostsFile=/dev/null \
