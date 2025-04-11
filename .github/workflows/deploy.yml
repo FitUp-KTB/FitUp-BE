@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - dev
+      - feat/cicd*
 
 jobs:
   build-and-push:
@@ -42,11 +43,11 @@ jobs:
       - name: Build Docker Image
         run: |
           JAR_FILE=$(ls build/libs/*.jar | grep -v plain)
-          docker build -t $IMAGE_NAME:${{ github.ref_name }} .
+          docker build -t $IMAGE_NAME:latest .
 
       - name: Push Docker Image to Docker Hub
         run: |
-          docker push $IMAGE_NAME:${{ github.ref_name }}
+          docker push $IMAGE_NAME:latest
 
   deploy:
     needs: build-and-push
@@ -55,33 +56,42 @@ jobs:
 
     steps:
       - name: Deploy to Remote Server via SSH
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            if [[ "${GITHUB_REF##*/}" == "main" ]]; then
-              IMAGE_NAME=${{ secrets.DOCKER_HUB_USERNAME }}/fitup-backend
-              CONTAINER_NAME=fitup-backend
-            else
-              IMAGE_NAME=${{ secrets.DOCKER_HUB_USERNAME }}/fitup-backend-dev
-              CONTAINER_NAME=fitup-backend-dev
-            fi
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_JUMP_KEY }}" > ~/.ssh/jump_key
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/private_vm_key
+          chmod 600 ~/.ssh/jump_key ~/.ssh/private_vm_key
+
+          # GitHub Actions 내에서 필요한 변수 계산
+          if [[ "${GITHUB_REF##*/}" == "main" ]]; then
+            IMAGE_NAME="${{ secrets.DOCKER_HUB_USERNAME }}/fitup-backend"
+            CONTAINER_NAME="fitup-backend"
+          else
+            IMAGE_NAME="${{ secrets.DOCKER_HUB_USERNAME }}/fitup-backend-dev"
+            CONTAINER_NAME="fitup-backend-dev"
+          fi
+
+          PROFILE="${GITHUB_REF##*/}"
+
+          ssh -o StrictHostKeyChecking=no \
+            -o UserKnownHostsFile=/dev/null \
+            -o ProxyCommand="ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ~/.ssh/jump_key -W %h:%p ${{ secrets.SSH_JUMP_USER }}@${{ secrets.SSH_JUMP_HOST }}" \
+            -i ~/.ssh/private_vm_key \
+            ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << EOF
+
+            set -e
 
             docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} -p ${{ secrets.DOCKER_HUB_PASSWORD }}
-            docker pull $IMAGE_NAME:${{ github.ref_name }}
+            docker pull $IMAGE_NAME:latest
 
-            # 기존 컨테이너 중지 및 삭제
             docker stop $CONTAINER_NAME || true
             docker rm $CONTAINER_NAME || true
 
-            # 새 컨테이너 실행
             docker run -d \
               --name $CONTAINER_NAME \
               --restart unless-stopped \
               -p 8080:8080 \
-              -e SPRING_PROFILES_ACTIVE=${{ github.ref_name }} \
+              -e SPRING_PROFILES_ACTIVE=$PROFILE \
               -e SPRING_DATASOURCE_URL="${{ secrets.SPRING_DATASOURCE_URL }}" \
               -e SPRING_DATASOURCE_USERNAME="${{ secrets.SPRING_DATASOURCE_USERNAME }}" \
               -e SPRING_DATASOURCE_PASSWORD="${{ secrets.SPRING_DATASOURCE_PASSWORD }}" \
@@ -89,4 +99,7 @@ jobs:
               -e JWT_SECRET_KEY="${{ secrets.JWT_SECRET_KEY }}" \
               -e JWT_ACCESS_TOKEN_EXPIRATION="${{ secrets.JWT_ACCESS_TOKEN_EXPIRATION }}" \
               -e JWT_REFRESH_TOKEN_EXPIRATION="${{ secrets.JWT_REFRESH_TOKEN_EXPIRATION }}" \
-              $IMAGE_NAME:${{ github.ref_name }}
+              $IMAGE_NAME:latest
+
+              docker image prune -af
+          EOF
