@@ -16,8 +16,12 @@ public class CorsConfig {
         config.setAllowCredentials(true);
 
 //        config.addAllowedOriginPattern("*");
-        config.addAllowedOrigin("http://localhost:3000");
-        config.addAllowedOrigin("https://dev.fitup.space");
+        if (containsProfile(activeProfiles, "prod")) {
+            config.addAllowedOrigin("https://www.fitup.space");
+        } else if (containsProfile(activeProfiles, "dev")) {
+            config.addAllowedOrigin("http://localhost:3000");
+            config.addAllowedOrigin("https://dev.fitup.space");
+        }
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
         source.registerCorsConfiguration("/**", config);
