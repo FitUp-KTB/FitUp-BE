@@ -1,21 +1,31 @@
 package site.FitUp.main.model;
 
 
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import java.time.LocalDate;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.DynamicUpdate;
 import site.FitUp.main.common.enums.Gender;
 
-import java.time.LocalDate;
-
 @DynamicUpdate
-@Entity @Builder
+@Entity
+@Builder
 @Table(name = "user")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class User extends BaseTime{
+public class User extends BaseTime {
+
     @Id
     @Column(name = "user_id", length = 255)
     private String userId;
@@ -40,7 +50,9 @@ public class User extends BaseTime{
     @Column(columnDefinition = "TEXT")
     private String chronic;
 
-    private Integer targetWeight;
+    private String targetState;
+
+    private String currentState;
 
 
     private LocalDate birthDate;

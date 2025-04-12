@@ -53,7 +53,8 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(userId).orElse(null);
 
         user.setBirthDate(request.getBirthDate());
-        user.setTargetWeight(request.getTargetWeight());
+        user.setTargetState(request.getTargetState());
+        user.setCurrentState(request.getCurrentState());
         user.setGoal(request.getGoal());
         user.setChronic(request.getChronic());
 
