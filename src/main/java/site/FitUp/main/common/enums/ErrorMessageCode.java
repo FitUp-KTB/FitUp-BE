@@ -19,7 +19,11 @@ public enum ErrorMessageCode {
 
     // 댓글 관련
     COMMENT_NOT_FOUND("해당 댓글을 찾을 수 없습니다."),
-    COMMENT_NOT_OWNER("해당 댓글의 작성자가 아닙니다.");
+    COMMENT_NOT_OWNER("해당 댓글의 작성자가 아닙니다."),
 
+
+
+    // JWT 만료 관련
+    JWT_TOKEN_EXPIRED("엑세스토큰이 만료되었습니다. 새 엑세스토큰을 받아주세요.");
     private final String message;
 }

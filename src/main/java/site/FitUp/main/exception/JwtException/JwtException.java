@@ -1,13 +1,14 @@
 package site.FitUp.main.exception.JwtException;
 
 import lombok.NoArgsConstructor;
+import site.FitUp.main.common.enums.ErrorMessageCode;
 
 public class JwtException {
 
-    @NoArgsConstructor
+
     public static class TokenExpiredException extends RuntimeException {
-        public TokenExpiredException(String message) {
-            super(message);
+        public TokenExpiredException() {
+            super(ErrorMessageCode.JWT_TOKEN_EXPIRED.getMessage());
         }
     }
 

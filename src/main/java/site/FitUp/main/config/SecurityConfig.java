@@ -19,6 +19,7 @@ import site.FitUp.main.Security.JwtAuthenticationFilter;
 import site.FitUp.main.util.JwtUtil;
 
 import java.util.List;
+import java.util.Map;
 
 @Configuration
 @EnableWebSecurity
@@ -61,7 +62,14 @@ public class SecurityConfig {
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(org.springframework.security.config.http.SessionCreationPolicy.STATELESS))
                 .addFilter(corsConfig.corsFilter())
-                .addFilterBefore(new JwtAuthenticationFilter(jwtUtil, List.of("/api/v1/users", "/api/v1/users/token",  "/api/v1/health")), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(
+                    new JwtAuthenticationFilter(jwtUtil, Map.of(
+                        "/api/v1/users", List.of("POST"),
+                        "/api/v1/users/token", List.of("POST"),
+                        "/api/v1/health", List.of("GET")
+                    )),
+                    UsernamePasswordAuthenticationFilter.class
+                );
 
         return http.build();
     }

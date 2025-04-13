@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import site.FitUp.main.api.user.dtos.UserRequest;
 import site.FitUp.main.api.user.dtos.UserResponse;
 import site.FitUp.main.common.enums.MessageCode;
+import site.FitUp.main.exception.UserException.UserException;
 import site.FitUp.main.exception.UserException.UserException.UserIsValidException;
 import site.FitUp.main.model.User;
 import site.FitUp.main.model.UserStat;
@@ -68,7 +69,7 @@ public class UserServiceImpl implements UserService {
 
         User user = userRepository.findByEmail(request.getEmail());
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new IllegalAccessException();
+            throw new UserException.LoginFailedException();
         } else {
             return UserResponse.LoginUserResponse.builder()
                     .accessToken(JwtUtil.generateAccessToken(user.getUserId()))
@@ -86,6 +87,10 @@ public class UserServiceImpl implements UserService {
 
     public UserResponse.GetUserResponse GetUserResponse(String userId) {
         User user = userRepository.findById(userId).orElse(null);
+        log.info(userId);
+        if(user==null){
+            throw new UserIsValidException();
+        }
         UserStat userStat = userStatRepository.findTopByUserOrderByCreatedAtDesc(user);
         if (userStat == null) {
             userStat = UserStat.builder()

@@ -7,6 +7,7 @@ import org.springframework.http.converter.HttpMessageConversionException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.client.HttpServerErrorException;
+import site.FitUp.main.exception.JwtException.JwtException;
 import site.FitUp.main.exception.UserException.UserException;
 
 @RestControllerAdvice
@@ -65,4 +66,15 @@ public class ExceptionController {
         exceptionResult.setMessage(ex.getMessage());
         return new ResponseEntity<>(exceptionResult, HttpStatus.CONFLICT);
     }
+
+    //Jwt 토큰 만료 관련
+    @ExceptionHandler(JwtException.TokenExpiredException.class)
+    public ResponseEntity<ExceptionResponse> handleJwtTokenExpiredException(
+            JwtException.TokenExpiredException ex){
+        ExceptionResponse exceptionResult = new ExceptionResponse();
+        exceptionResult.setCode("403");
+        exceptionResult.setMessage(ex.getMessage());
+        return new ResponseEntity<>(exceptionResult, HttpStatus.UNAUTHORIZED);
+    }
+
 }

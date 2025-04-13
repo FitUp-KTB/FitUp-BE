@@ -16,6 +16,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import site.FitUp.main.exception.JwtException.JwtException;
 import site.FitUp.main.util.JwtUtil;
 
 import java.io.IOException;
@@ -28,12 +29,12 @@ import java.util.Map;
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private final JwtUtil jwtUtil;
     private final ObjectMapper objectMapper = new ObjectMapper(); // JSON 변환기
-    private final List<String> excludedPaths; // ✅ 필터 제외할 경로 리스트
+    private final Map<String, List<String>> excludedMap;//
 
-    public JwtAuthenticationFilter(JwtUtil jwtUtil, List<String> excludedPaths) {
-        this.jwtUtil = jwtUtil;
-        this.excludedPaths = excludedPaths;
-    }
+    public JwtAuthenticationFilter(JwtUtil jwtUtil, Map<String, List<String>> excludedMap) {
+    this.jwtUtil = jwtUtil;
+    this.excludedMap = excludedMap;
+}
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
@@ -43,13 +44,15 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         HttpServletResponse httpResponse = (HttpServletResponse) response;
 
         String requestURI = httpRequest.getRequestURI();
-        String method = httpRequest.getMethod();
+String method = httpRequest.getMethod();
 
         // DELETE 요청이 아니라면, 인증 제외할 경로 확인
-        if (!method.equals("DELETE") && excludedPaths.contains(requestURI)) {
+        if (excludedMap.containsKey(requestURI) &&
+            excludedMap.get(requestURI).contains(method)) {
+
             chain.doFilter(request, response);
             return;
-        }
+}
 
         String authorizationHeader = httpRequest.getHeader("Authorization");
 
@@ -74,7 +77,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
             chain.doFilter(request, response);
         } catch (ExpiredJwtException e) {
-            // 🔹 액세스 토큰 만료 시 리프레시 토큰을 사용하여 재발급 시도
+            // 액세스 토큰 만료 시 리프레시 토큰을 사용하여 재발급 시도
             String refreshToken = httpRequest.getHeader("refreshToken");
             log.info("Refresh token: {}", refreshToken);
             if (refreshToken != null && !refreshToken.isEmpty()) {
@@ -85,12 +88,11 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                     // 새 accessToken 생성
                     String newAccessToken = jwtUtil.generateAccessToken(userId);
                     log.info("New access token: {}", newAccessToken);
-                    // 🔹 새 accessToken을 응답 헤더에 추가
+                    // 새 accessToken을 응답 헤더에 추가
                     httpResponse.setHeader("Authorization", "Bearer " + newAccessToken);
                     httpResponse.setHeader("Access-Control-Expose-Headers", "Authorization");
-                    // 🔹 응답을 계속 진행 (클라이언트가 새 accessToken을 사용할 수 있도록)
                     chain.doFilter(request, response);
-                    return;
+
                 } catch (Exception ex) {
                     sendErrorResponse(httpResponse, HttpServletResponse.SC_UNAUTHORIZED, "Refresh Token이 유효하지 않습니다.");
                     return;
@@ -98,11 +100,11 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             }
 
             sendErrorResponse(httpResponse, HttpServletResponse.SC_UNAUTHORIZED, "Access Token이 만료되었습니다. Refresh Token을 사용해 주세요.");
-            return;
+
         } catch (Exception e) {
             log.error(e.getMessage());
             sendErrorResponse(httpResponse, HttpServletResponse.SC_UNAUTHORIZED, "유효하지 않은 토큰입니다.");
-            return;
+
         }
     }
 
